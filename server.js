@@ -1,8 +1,23 @@
-const rpio = require("rpio");
-const App = require("express")();
 const path = require("path");
-const Server = require("http").createServer(App);
+const fs = require("fs");
+const rpio = require("rpio");
+const express = require("express");
+
+const HttpsOptions = {
+	key: fs.readFileSync(path.join(__dirname, "private", "raspberrypi_lan.server.key")),
+	cert: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.server.crt")),
+	crl: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crl")),
+	ca: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crt")),
+	requestCert: true,
+	rejectUnauthorized: true
+};
+
+const App = express();
+const Server = require("https").createServer(HttpsOptions, App);
 const io = require("socket.io")(Server);
+
+const HttpApp = require("express")();
+const HttpServer = require("http").createServer(HttpApp);
 
 rpio.open(8, rpio.OUTPUT, rpio.LOW);
 var Locked = false;
@@ -26,6 +41,8 @@ function Lock(Value) {
 	io.emit("lock_status", Locked);
 };
 
+App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
+
 App.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -40,6 +57,14 @@ io.on("connection", (Socket) => {
 	Socket.emit("lock_status", Locked);
 });
 
-Server.listen(3080, function() {
-	console.log("Listening on port 3080!");
+Server.listen(3443, () => {
+	console.log("Listening on port 3443 for HTTPS connections");
+});
+
+HttpApp.get("*", (req, res) => {
+	res.redirect("https://raspberrypi.lan" +  req.originalUrl);
+});
+
+HttpApp.listen(3080, () => {
+	console.log("Listening on port 3080 for HTTP connections");
 });
