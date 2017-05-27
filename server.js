@@ -20,6 +20,10 @@ const HttpApp = require("express")();
 const HttpServer = require("http").createServer(HttpApp);
 
 rpio.open(8, rpio.OUTPUT, rpio.LOW);
+rpio.open(26, rpio.INPUT, rpio.PULL_DOWN);
+// rpio.POLL_HIGH doesn't actually do anything in the current version of rpio
+rpio.poll(26, (Pin) => { if (rpio.read(Pin)) Open(); }, rpio.POLL_HIGH);
+
 var Locked = false;
 var Timeout = null;
 
