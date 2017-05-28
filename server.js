@@ -22,27 +22,42 @@ const HttpServer = require("http").createServer(HttpApp);
 rpio.open(8, rpio.OUTPUT, rpio.LOW);
 rpio.open(26, rpio.INPUT, rpio.PULL_DOWN);
 // rpio.POLL_HIGH doesn't actually do anything in the current version of rpio
-rpio.poll(26, (Pin) => { if (rpio.read(Pin)) Open(); }, rpio.POLL_HIGH);
+rpio.poll(26, (Pin) => { if (rpio.read(Pin)) Open("GPIO Input"); }, rpio.POLL_HIGH);
 
 var Locked = false;
 var Timeout = null;
 
-function Open() {
-	if (!Locked) {
-		clearTimeout(Timeout);
-		rpio.write(8, rpio.HIGH);
-		Timeout = setTimeout(() => { rpio.write(8, rpio.LOW); }, 500);
+function Open(Id) {
+	if (Locked) {
+		Log("User " + Id + " requested to open the door - REJECTED");
+		return;
 	}
+
+	clearTimeout(Timeout);
+	rpio.write(8, rpio.HIGH);
+	Timeout = setTimeout(() => { rpio.write(8, rpio.LOW); }, 500);
+
+	Log("User " + Id + " requested to open the door - GRANTED");
 };
 
-function Lock(Value) {
+function Lock(Id, Value) {
 	if (typeof Value != "boolean") {
-		console.log("Received corrupt response from client: " + Value);
+		Log("Received corrupt response from user " + Id + ": " + Value);
 		return;
 	}
 
 	Locked = Value;
 	io.emit("lock_status", Locked);
+
+	Log("User " + Id + " changed the Lock value to " + Value);
+};
+
+function Timestamp() {
+	return '[' +  new Date().toUTCString() + ']';
+};
+
+function Log(Message) {
+	console.log(Timestamp() + ' ' + Message);
 };
 
 App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
@@ -56,13 +71,15 @@ App.get("/client.js", (req, res) => {
 });
 
 io.on("connection", (Socket) => {
-	Socket.on("open", Open);
-	Socket.on("lock", Lock);
+	const Id = Socket.client.request.client.getPeerCertificate().subject.CN;
+
+	Socket.on("open", Open.bind(null, Id));
+	Socket.on("lock", Lock.bind(null, Id));
 	Socket.emit("lock_status", Locked);
 });
 
 Server.listen(3443, () => {
-	console.log("Listening on port 3443 for HTTPS connections");
+	Log("Listening on port 3443 for HTTPS connections");
 });
 
 HttpApp.get("*", (req, res) => {
@@ -70,5 +87,5 @@ HttpApp.get("*", (req, res) => {
 });
 
 HttpApp.listen(3080, () => {
-	console.log("Listening on port 3080 for HTTP connections");
+	Log("Listening on port 3080 for HTTP connections");
 });
