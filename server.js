@@ -35,7 +35,7 @@ function Open(Id) {
 
 	clearTimeout(Timeout);
 	rpio.write(8, rpio.HIGH);
-	Timeout = setTimeout(() => { rpio.write(8, rpio.LOW); }, 500);
+	Timeout = setTimeout(() => { rpio.write(8, rpio.LOW); }, 3000);
 
 	Log("User " + Id + " requested to open the door - GRANTED");
 };
