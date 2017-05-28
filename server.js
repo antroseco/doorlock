@@ -70,6 +70,10 @@ App.get("/client.js", (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "client.js"));
 });
 
+App.get("/style.css", (req, res) => {
+	 res.sendFile(path.join(__dirname, "public", "style.css"));
+});
+
 io.on("connection", (Socket) => {
 	const Id = Socket.client.request.client.getPeerCertificate().subject.CN;
 
