@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^4.15.3",
     "rpio": "^0.9.16",
-    "socket.io": "^2.0.1"
+    "socket.io": "^2.0.1",
+    "snyk": "^1.31.0"
   },
   "devDependencies": {},
   "repository": {
@@ -14,8 +15,11 @@
     "url": "https://github.com/KimJongSkill/doorlock.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Andreas Economides",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "snyk": true
 }
