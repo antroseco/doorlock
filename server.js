@@ -14,7 +14,17 @@ const HttpsOptions = {
 
 const App = express();
 const Server = require("https").createServer(HttpsOptions, App);
-const io = require("socket.io")(Server);
+
+const io = require("socket.io")();
+io.origins((Origin, Callback) => {
+	const Result = Origin === "https://raspberrypi.lan/";
+
+	if (!Result)
+		Warn("Rejected socket connection from invalid origin: " + Origin);
+
+	Callback(null, Result);
+});
+io.attach(Server);
 
 const HttpApp = require("express")();
 const HttpServer = require("http").createServer(HttpApp);
@@ -58,6 +68,10 @@ function Timestamp() {
 
 function Log(Message) {
 	console.log(Timestamp() + ' ' + Message);
+};
+
+function Warn(Message) {
+	console.warn(Timestamp() + ' ' + Message);
 };
 
 App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
