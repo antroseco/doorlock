@@ -6,10 +6,8 @@ function Open() {
 };
 
 function ToggleLock() {
-	if (LockStatus == null)
-		return;
-
-	Socket.emit("lock", !LockStatus);
+	if (LockStatus != undefined)
+		Socket.emit("lock", !LockStatus);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
