@@ -74,6 +74,10 @@ function Warn(Message) {
 	console.warn(Timestamp() + ' ' + Message);
 };
 
+function Info(Message) {
+	console.info(Timestamp() + ' ' + Message);
+};
+
 App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
 
 App.get("/", (req, res) => {
@@ -97,7 +101,7 @@ io.on("connection", (Socket) => {
 });
 
 Server.listen(3443, () => {
-	Log("Listening on port 3443 for HTTPS connections");
+	Info("Listening on port 3443 for HTTPS connections");
 });
 
 HttpApp.get("*", (req, res) => {
@@ -105,5 +109,5 @@ HttpApp.get("*", (req, res) => {
 });
 
 HttpApp.listen(3080, () => {
-	Log("Listening on port 3080 for HTTP connections");
+	Info("Listening on port 3080 for HTTP connections");
 });
