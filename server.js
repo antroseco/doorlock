@@ -105,7 +105,7 @@ Server.listen(3443, () => {
 });
 
 HttpApp.get("*", (req, res) => {
-	res.redirect("https://raspberrypi.lan" +  req.originalUrl);
+	res.redirect(301, "https://raspberrypi.lan" +  req.originalUrl);
 });
 
 HttpApp.listen(3080, () => {
