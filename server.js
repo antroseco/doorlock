@@ -26,6 +26,18 @@ io.origins((Origin, Callback) => {
 });
 io.attach(Server);
 
+const helmet = require("helmet");
+App.use(helmet());
+App.use(helmet.contentSecurityPolicy({
+	directives: {
+		defaultSrc: ["'none'"],
+		styleSrc: ["'self'"],
+		scriptSrc: ["'self'"],
+		connectSrc: ["'self'", "wss://raspberrypi.lan"],
+		reportUri: "/report-violation"
+	}
+}));
+
 const HttpApp = require("express")();
 const HttpServer = require("http").createServer(HttpApp);
 
@@ -83,6 +95,12 @@ App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
 
 App.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+App.post("/report-violation", (req, res) => {
+	Warn("CSP Violation reported by " + req.client.getPeerCertificate().subject.CN);
+
+	res.status(204).end();
 });
 
 io.on("connection", (Socket) => {
