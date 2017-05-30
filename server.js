@@ -78,18 +78,11 @@ function Info(Message) {
 	console.info(Timestamp() + ' ' + Message);
 };
 
+App.use(express.static(path.join(__dirname, "public", "www")));
 App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
 
 App.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-App.get("/client.js", (req, res) => {
-	res.sendFile(path.join(__dirname, "public", "client.js"));
-});
-
-App.get("/style.css", (req, res) => {
-	 res.sendFile(path.join(__dirname, "public", "style.css"));
 });
 
 io.on("connection", (Socket) => {
