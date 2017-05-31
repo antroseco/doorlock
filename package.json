@@ -8,7 +8,7 @@
     "express": "^4.15.3",
     "helmet": "^3.6.1",
     "rpio": "^0.9.16",
-    "snyk": "^1.31.0",
+    "snyk": "^1.32.0",
     "socket.io": "^2.0.1"
   },
   "devDependencies": {},
