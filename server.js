@@ -90,6 +90,13 @@ function Info(Message) {
 	console.info(Timestamp() + ' ' + Message);
 };
 
+App.all("*", (req, res, next) => {
+	if (!req.hostname.endsWith(".lan"))
+		res.redirect(301, "https://raspberrypi.lan" + req.originalUrl);
+
+	next();
+});
+
 App.use(express.static(path.join(__dirname, "public", "www")));
 App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
 
