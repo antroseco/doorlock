@@ -21,7 +21,7 @@ io.origins((Origin, Callback) => {
 	const Result = Origin === "https://raspberrypi.lan/";
 
 	if (!Result)
-		Warn("Rejected socket connection from invalid origin: " + Origin);
+		Warn(Origin, "rejected socket connection from", "invalid origin");
 
 	Callback(null, Result);
 });
@@ -52,7 +52,7 @@ var Timeout = null;
 
 function Open(Id) {
 	if (Locked) {
-		Log("User " + Id + " requested to open the door - REJECTED");
+		Log(Id, "requested to open the door", "REJECTED");
 		return;
 	}
 
@@ -60,36 +60,28 @@ function Open(Id) {
 	rpio.write(8, rpio.HIGH);
 	Timeout = setTimeout(() => { rpio.write(8, rpio.LOW); }, 3000);
 
-	Log("User " + Id + " requested to open the door - GRANTED");
+	Log(Id, "requested to open the door", "GRANTED");
 };
 
 function Lock(Id, Value) {
 	if (typeof Value != "boolean") {
-		Log("Received corrupt response from user " + Id + ": " + Value);
+		Log(Id, "received corrupt response", typeof Value);
 		return;
 	}
 
 	Locked = Value;
 	io.emit("lock_status", Locked);
 
-	Log("User " + Id + " changed the Lock value to " + Value);
+	Log(Id, "updated the Lock status", Value.toString());
 };
 
-function Timestamp() {
-	return ('[' +  new Date().toUTCString() + ']').green;
-};
+Timestamp = () => ('[' +  new Date().toUTCString() + ']').green;
 
-function Log(Message) {
-	console.log(Timestamp(), ' ', Message);
-};
+Log = (User, Message, Details) => console.log(Timestamp(), User.white.bold, Message.white, Details.white.bold);
 
-function Warn(Message) {
-	console.warn(Timestamp(), ' ', Message.yellow);
-};
+Info = (User, Message, Details) => console.info(Timestamp(), User.gray.bold, Message.gray, Details.gray.bold);
 
-function Info(Message) {
-	console.info(Timestamp(), ' ', Message.gray);
-};
+Warn = (User, Message, Details) => console.warn(Timestamp(), User.yellow.bold, Message.yellow, Details.yellow.bold);
 
 App.all("*", (req, res, next) => {
 	if (!req.hostname.endsWith(".lan"))
@@ -106,7 +98,7 @@ App.get("/", (req, res) => {
 });
 
 App.post("/report-violation", (req, res) => {
-	Warn("CSP Violation reported by " + req.client.getPeerCertificate().subject.CN);
+	Warn(req.client.getPeerCertificate().subject.CN, "reported a", "CSP violation");
 
 	res.status(204).end();
 });
@@ -120,7 +112,7 @@ io.on("connection", (Socket) => {
 });
 
 Server.listen(3443, () => {
-	Info("Listening on port 3443 for HTTPS connections");
+	Info("HTTPS", "listening on port", "3443");
 });
 
 HttpApp.get("*", (req, res) => {
@@ -132,5 +124,5 @@ HttpApp.all("*", (req, res) => {
 });
 
 HttpApp.listen(3080, () => {
-	Info("Listening on port 3080 for HTTP connections");
+	Info("HTTP ", "listening on port", "3080");
 });
