@@ -93,8 +93,8 @@ function Info(Message) {
 App.all("*", (req, res, next) => {
 	if (!req.hostname.endsWith(".lan"))
 		res.redirect(301, "https://raspberrypi.lan" + req.originalUrl);
-
-	next();
+	else
+		next();
 });
 
 App.use(express.static(path.join(__dirname, "public", "www")));
