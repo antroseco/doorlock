@@ -58,7 +58,7 @@ function Open(Id) {
 
 	clearTimeout(Timeout);
 	rpio.write(8, rpio.HIGH);
-	Timeout = setTimeout(() => { rpio.write(8, rpio.LOW); }, 3000);
+	Timeout = setTimeout(() => rpio.write(8, rpio.LOW), 3000);
 
 	Log(Id, "requested to open the door", "GRANTED");
 };
@@ -70,7 +70,7 @@ function Lock(Id, Value) {
 	}
 
 	Locked = Value;
-	io.emit("lock_status", Locked);
+	io.emit("lock_status", Value);
 
 	Log(Id, "updated the Lock status", Value.toString());
 };
@@ -93,9 +93,7 @@ App.all("*", (req, res, next) => {
 App.use(express.static(path.join(__dirname, "public", "www")));
 App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
 
-App.get("/", (req, res) => {
-	res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+App.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 App.post("/report-violation", (req, res) => {
 	Warn(req.client.getPeerCertificate().subject.CN, "reported a", "CSP violation");
@@ -111,18 +109,10 @@ io.on("connection", (Socket) => {
 	Socket.emit("lock_status", Locked);
 });
 
-Server.listen(3443, () => {
-	Info("HTTPS", "listening on port", "3443");
-});
+Server.listen(3443, () => Info("HTTPS", "listening on port", "3443"));
 
-HttpApp.get("*", (req, res) => {
-	res.redirect(301, "https://raspberrypi.lan" +  req.originalUrl);
-});
+HttpApp.get("*", (req, res) => res.redirect(301, "https://raspberrypi.lan" +  req.originalUrl));
 
-HttpApp.all("*", (req, res) => {
-	res.sendStatus(403);
-});
+HttpApp.all("*", (req, res) => res.sendStatus(403));
 
-HttpApp.listen(3080, () => {
-	Info("HTTP ", "listening on port", "3080");
-});
+HttpApp.listen(3080, () => Info("HTTP ", "listening on port", "3080"));
