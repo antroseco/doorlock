@@ -4,6 +4,7 @@
   "description": "IoT Door Control",
   "main": "server.js",
   "dependencies": {
+    "colors": "^1.1.2",
     "express": "^4.15.3",
     "helmet": "^3.6.1",
     "rpio": "^0.9.16",

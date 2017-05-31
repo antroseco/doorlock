@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const rpio = require("rpio");
+const colors = require("colors");
 const express = require("express");
 
 const HttpsOptions = {
@@ -75,19 +76,19 @@ function Lock(Id, Value) {
 };
 
 function Timestamp() {
-	return '[' +  new Date().toUTCString() + ']';
+	return ('[' +  new Date().toUTCString() + ']').green;
 };
 
 function Log(Message) {
-	console.log(Timestamp() + ' ' + Message);
+	console.log(Timestamp(), ' ', Message);
 };
 
 function Warn(Message) {
-	console.warn(Timestamp() + ' ' + Message);
+	console.warn(Timestamp(), ' ', Message.yellow);
 };
 
 function Info(Message) {
-	console.info(Timestamp() + ' ' + Message);
+	console.info(Timestamp(), ' ', Message.gray);
 };
 
 App.all("*", (req, res, next) => {
