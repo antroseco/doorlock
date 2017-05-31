@@ -126,6 +126,10 @@ HttpApp.get("*", (req, res) => {
 	res.redirect(301, "https://raspberrypi.lan" +  req.originalUrl);
 });
 
+HttpApp.all("*", (req, res) => {
+	res.sendStatus(403);
+});
+
 HttpApp.listen(3080, () => {
 	Info("Listening on port 3080 for HTTP connections");
 });
