@@ -1,8 +1,12 @@
 const Socket = io();
 var LockStatus;
 
-function Open() {
+function OpenDoor() {
 	Socket.emit("open");
+};
+
+function OpenGate() {
+	Socket.emit("gate");
 };
 
 function ToggleLock() {
@@ -11,7 +15,8 @@ function ToggleLock() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-	document.getElementById("open").addEventListener("click", Open);
+	document.getElementById("open").addEventListener("click", OpenDoor);
+	document.getElementById("gate").addEventListener("click", OpenGate);
 	document.getElementById("lock").addEventListener("click", ToggleLock);
 });
 

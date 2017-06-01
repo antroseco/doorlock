@@ -43,24 +43,34 @@ const HttpApp = require("express")();
 const HttpServer = require("http").createServer(HttpApp);
 
 rpio.open(8, rpio.OUTPUT, rpio.LOW);
+rpio.open(22, rpio.OUTPUT, rpio.LOW);
 rpio.open(26, rpio.INPUT, rpio.PULL_DOWN);
 // rpio.POLL_HIGH doesn't actually do anything in the current version of rpio
-rpio.poll(26, (Pin) => { if (rpio.read(Pin)) Open("GPIO Input"); }, rpio.POLL_HIGH);
+rpio.poll(26, (Pin) => { if (rpio.read(Pin)) OpenDoor("GPIO Input"); }, rpio.POLL_HIGH);
 
 var Locked = false;
-var Timeout = null;
+var DoorTimeout = null;
+var GateTimeout = null;
 
-function Open(Id) {
+function OpenDoor(Id) {
 	if (Locked) {
 		Log(Id, "requested to open the door", "REJECTED");
 		return;
 	}
 
-	clearTimeout(Timeout);
+	clearTimeout(DoorTimeout);
 	rpio.write(8, rpio.HIGH);
-	Timeout = setTimeout(() => rpio.write(8, rpio.LOW), 3000);
+	DoorTimeout = setTimeout(() => rpio.write(8, rpio.LOW), 3000);
 
 	Log(Id, "requested to open the door", "GRANTED");
+};
+
+function OpenGate(Id) {
+	clearTimeout(GateTimeout);
+	rpio.write(22, rpio.HIGH);
+	GateTimeout = setTimeout(() => rpio.write(22, rpio.LOW), 1000);
+
+	Log(Id, "requested to open the gate", "GRANTED");
 };
 
 function Lock(Id, Value) {
@@ -104,7 +114,8 @@ App.post("/report-violation", (req, res) => {
 io.on("connection", (Socket) => {
 	const Id = Socket.client.request.client.getPeerCertificate().subject.CN;
 
-	Socket.on("open", Open.bind(null, Id));
+	Socket.on("open", OpenDoor.bind(null, Id));
+	Socket.on("gate", OpenGate.bind(null, Id));
 	Socket.on("lock", Lock.bind(null, Id));
 	Socket.emit("lock_status", Locked);
 });
