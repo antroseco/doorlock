@@ -74,7 +74,7 @@ function OpenGate(Id) {
 };
 
 function Lock(Id, Value) {
-	if (typeof Value != "boolean") {
+	if (typeof Value != "boolean" || Value === Locked) {
 		Log(Id, "received corrupt response", typeof Value);
 		return;
 	}
