@@ -1,16 +1,66 @@
-<head>
-	<title>IoT Doorlock</title>
+<!DOCTYPE html>
+<html class="mdc-typography">
+	<head>
+		<title>IoT Doorlock</title>
 
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-	<link rel="stylesheet" href="/style.css" />
+		<script src="/material-components-web.js"></script>
+		<link rel="stylesheet" href="/material-components-web.css" />
+		<link rel="stylesheet" href="/style.css" />
 
-	<script src="/socket.io/socket.io.js"></script>
-	<script src="/client.js"></script>
-</head>
-<body>
-	<button id="lock">Floating</button>
-	<button id="open">Open!</button>
-	<button id="gate">Gate</button>
-</body>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/client.js"></script>
+	</head>
+	<body>
+
+		<header class="mdc-toolbar mdc-toolbar--fixed">
+			<div class="mdc-toolbar__row">
+				<section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+					<span class="mdc-toolbar__title">Doorlock</span>
+				</section>
+			</div>
+		</header>
+
+		<main class="mdc-toolbar-fixed-adjust">
+			<div class="mdc-layout-grid">
+				<div class="mdc-layout-grid__cell">
+					<div class="mdc-card">
+
+						<section class="mdc-card__primary">
+							<h1 class="mdc-card__title mdc-card__title--large">Door control</h1>
+						</section>
+
+						<section class="mdc-card__actions">
+							<button id="open" class="mdc-button mdc-button--compact mdc-button--accent mdc-card__action" data-mdc-auto-init="MDCRipple">Open</button>
+
+							<div class="mdc-switch mdc-card__action">
+								<input type="checkbox" id="lock" class="mdc-switch__native-control" disabled />
+								<div class="mdc-switch__background">
+									<div class="mdc-switch__knob"></div>
+								</div>
+							</div>
+
+						</section>
+
+					</div>
+				</div>
+
+				<div class="mdc-layout-grid__cell">
+					<div class="mdc-card">
+
+						<section class="mdc-card__primary">
+							<h1 class="mdc-card__title mdc-card__title--large">Gate control</h1>
+						</section>
+
+						<section class="mdc-card__actions">
+							<button id="gate" class="mdc-button mdc-button--compact mdc-button--accent mdc-card__action" data-mdc-auto-init="MDCRipple">Open</button>
+						</section>
+
+					</div>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

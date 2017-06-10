@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("open").addEventListener("click", OpenDoor);
 	document.getElementById("gate").addEventListener("click", OpenGate);
 	document.getElementById("lock").addEventListener("click", ToggleLock);
+
+	mdc.autoInit();
 });
 
 Socket.on("lock_status", (Value) => {
@@ -27,5 +29,7 @@ Socket.on("lock_status", (Value) => {
 	}
 
 	LockStatus = Value;
-	document.getElementById("lock").innerHTML = Value;
+	document.getElementById("lock").checked = Value;
+	document.getElementById("lock").disabled = false;
+	document.getElementById("open").disabled = Value;
 });

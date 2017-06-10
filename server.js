@@ -101,6 +101,7 @@ App.all("*", (req, res, next) => {
 });
 
 App.use(express.static(path.join(__dirname, "public", "www")));
+App.use(express.static(path.join(__dirname, "node_modules", "material-components-web", "dist")));
 App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
 
 App.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));

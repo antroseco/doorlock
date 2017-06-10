@@ -1,7 +1,7 @@
-button {
-	width: 50%;
-	height: 25%;
-	margin: 3vh 25%;
-	font-size: xx-large;
-	font-family: Segoe UI, sans-serif;
-};
+section.mdc-card__actions {
+	justify-content: space-between;
+}
+
+div.mdc-switch.mdc-card__action {
+	align-self: center;
+}
