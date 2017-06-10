@@ -1,23 +1,11 @@
 const Socket = io();
-var LockStatus;
-
-function OpenDoor() {
-	Socket.emit("open");
-};
-
-function OpenGate() {
-	Socket.emit("gate");
-};
-
-function ToggleLock() {
-	if (LockStatus != undefined)
-		Socket.emit("lock", !LockStatus);
-};
 
 document.addEventListener("DOMContentLoaded", () => {
-	document.getElementById("door-button").addEventListener("click", OpenDoor);
-	document.getElementById("gate-button").addEventListener("click", OpenGate);
-	document.getElementById("door-toggle").addEventListener("click", ToggleLock);
+	document.getElementById("door-button").addEventListener("click", Socket.emit.bind(Socket, "open"));
+	document.getElementById("gate-button").addEventListener("click", Socket.emit.bind(Socket, "gate"));
+
+	document.getElementById("door-toggle").addEventListener("click", () =>
+		Socket.emit("lock", document.getElementById("door-toggle").checked));
 
 	mdc.autoInit();
 });
@@ -28,7 +16,6 @@ Socket.on("lock_status", (Value) => {
 		return;
 	}
 
-	LockStatus = Value;
 	document.getElementById("door-toggle").checked = Value;
 	document.getElementById("door-toggle").disabled = false;
 	document.getElementById("door-button").disabled = Value;
