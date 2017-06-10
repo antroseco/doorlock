@@ -48,12 +48,13 @@ rpio.open(26, rpio.INPUT, rpio.PULL_DOWN);
 // rpio.POLL_HIGH doesn't actually do anything in the current version of rpio
 rpio.poll(26, (Pin) => { if (rpio.read(Pin)) OpenDoor("GPIO Input"); }, rpio.POLL_HIGH);
 
-var Locked = false;
+var DoorLocked = false;
+var GateLocked = false;
 var DoorTimeout = null;
 var GateTimeout = null;
 
 function OpenDoor(Id) {
-	if (Locked) {
+	if (DoorLocked) {
 		Log(Id, "requested to open the door", "REJECTED");
 		return;
 	}
@@ -66,6 +67,11 @@ function OpenDoor(Id) {
 };
 
 function OpenGate(Id) {
+	if (GateLocked) {
+		Log(Id, "requested to open the gate", "REJECTED");
+		return;
+	}
+
 	clearTimeout(GateTimeout);
 	rpio.write(22, rpio.HIGH);
 	GateTimeout = setTimeout(() => rpio.write(22, rpio.LOW), 1000);
@@ -73,16 +79,28 @@ function OpenGate(Id) {
 	Log(Id, "requested to open the gate", "GRANTED");
 };
 
-function Lock(Id, Value) {
-	if (typeof Value != "boolean" || Value === Locked) {
+function LockDoor(Id, Value) {
+	if (typeof Value != "boolean" || Value === DoorLocked) {
 		Log(Id, "received corrupt response", typeof Value);
 		return;
 	}
 
-	Locked = Value;
-	io.emit("lock_status", Value);
+	DoorLocked = Value;
+	io.emit("door_status", Value);
 
-	Log(Id, "updated the Lock status", Value.toString());
+	Log(Id, "updated the Door Lock status", Value.toString());
+};
+
+function LockGate(Id, Value) {
+	if (typeof Value != "boolean" || Value === GateLocked) {
+		Log(Id, "received corrupt response", typeof Value);
+		return;
+	}
+
+	GateLocked = Value;
+	io.emit("gate_status", Value);
+
+	Log(Id, "updated the Gate Lock status", Value.toString());
 };
 
 Timestamp = () => ('[' +  new Date().toUTCString() + ']').green;
@@ -117,8 +135,10 @@ io.on("connection", (Socket) => {
 
 	Socket.on("open", OpenDoor.bind(null, Id));
 	Socket.on("gate", OpenGate.bind(null, Id));
-	Socket.on("lock", Lock.bind(null, Id));
-	Socket.emit("lock_status", Locked);
+	Socket.on("door_lock", LockDoor.bind(null, Id));
+	Socket.on("gate_lock", LockGate.bind(null, Id));
+	Socket.emit("door_status", DoorLocked);
+	Socket.emit("gate_status", GateLocked);
 });
 
 Server.listen(3443, () => Info("HTTPS", "listening on port", "3443"));
