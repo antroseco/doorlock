@@ -15,9 +15,9 @@ function ToggleLock() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-	document.getElementById("open").addEventListener("click", OpenDoor);
-	document.getElementById("gate").addEventListener("click", OpenGate);
-	document.getElementById("lock").addEventListener("click", ToggleLock);
+	document.getElementById("door-button").addEventListener("click", OpenDoor);
+	document.getElementById("gate-button").addEventListener("click", OpenGate);
+	document.getElementById("door-toggle").addEventListener("click", ToggleLock);
 
 	mdc.autoInit();
 });
@@ -29,7 +29,7 @@ Socket.on("lock_status", (Value) => {
 	}
 
 	LockStatus = Value;
-	document.getElementById("lock").checked = Value;
-	document.getElementById("lock").disabled = false;
-	document.getElementById("open").disabled = Value;
+	document.getElementById("door-toggle").checked = Value;
+	document.getElementById("door-toggle").disabled = false;
+	document.getElementById("door-button").disabled = Value;
 });
