@@ -46,7 +46,7 @@ rpio.open(8, rpio.OUTPUT, rpio.LOW);
 rpio.open(22, rpio.OUTPUT, rpio.LOW);
 rpio.open(26, rpio.INPUT, rpio.PULL_DOWN);
 // rpio.POLL_HIGH doesn't actually do anything in the current version of rpio
-rpio.poll(26, (Pin) => { if (rpio.read(Pin)) OpenDoor("GPIO Input"); }, rpio.POLL_HIGH);
+rpio.poll(26, Pin => { if (rpio.read(Pin)) OpenDoor("GPIO Input"); }, rpio.POLL_HIGH);
 
 var DoorLocked = false;
 var GateLocked = false;
@@ -130,7 +130,7 @@ App.post("/report-violation", (req, res) => {
 	res.status(204).end();
 });
 
-io.on("connection", (Socket) => {
+io.on("connection", Socket => {
 	const Id = Socket.client.request.client.getPeerCertificate().subject.CN;
 
 	Socket.on("open", OpenDoor.bind(null, Id));
