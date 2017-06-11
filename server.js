@@ -39,9 +39,6 @@ App.use(helmet.contentSecurityPolicy({
 	}
 }));
 
-const HttpApp = require("express")();
-const HttpServer = require("http").createServer(HttpApp);
-
 rpio.open(8, rpio.OUTPUT, rpio.LOW);
 rpio.open(22, rpio.OUTPUT, rpio.LOW);
 rpio.open(26, rpio.INPUT, rpio.PULL_DOWN);
@@ -144,9 +141,3 @@ io.on("connection", Socket => {
 });
 
 Server.listen(3443, () => Info("HTTPS", "listening on port", "3443"));
-
-HttpApp.get("*", (req, res) => res.redirect(301, "https://raspberrypi.lan" +  req.originalUrl));
-
-HttpApp.all("*", (req, res) => res.sendStatus(403));
-
-HttpApp.listen(3080, () => Info("HTTP ", "listening on port", "3080"));
