@@ -1,8 +1,8 @@
 const path = require("path");
 const fs = require("fs");
 const rpio = require("rpio");
-const colors = require("colors");
 const express = require("express");
+const logger = require("./logger.js");
 
 const HttpsOptions = {
 	key: fs.readFileSync(path.join(__dirname, "private", "raspberrypi_lan.server.key")),
@@ -21,7 +21,7 @@ io.origins((Origin, Callback) => {
 	const Result = Origin === "https://raspberrypi.lan/";
 
 	if (!Result)
-		Warn(Origin, "rejected socket connection from", "invalid origin");
+		logger.Warn(Origin, "rejected socket connection from", "invalid origin");
 
 	Callback(null, Result);
 });
@@ -52,7 +52,7 @@ var GateTimeout = null;
 
 function OpenDoor(Id) {
 	if (DoorLocked) {
-		Log(Id, "requested to open the door", "REJECTED");
+		logger.Log(Id, "requested to open the door", "REJECTED");
 		return;
 	}
 
@@ -61,12 +61,12 @@ function OpenDoor(Id) {
 	DoorTimeout = setTimeout(() => rpio.write(8, rpio.LOW), 3000);
 
 	io.emit("message", "Door opened");
-	Log(Id, "requested to open the door", "GRANTED");
+	logger.Log(Id, "requested to open the door", "GRANTED");
 };
 
 function OpenGate(Id) {
 	if (GateLocked) {
-		Log(Id, "requested to open the gate", "REJECTED");
+		logger.Log(Id, "requested to open the gate", "REJECTED");
 		return;
 	}
 
@@ -75,40 +75,32 @@ function OpenGate(Id) {
 	GateTimeout = setTimeout(() => rpio.write(22, rpio.LOW), 1000);
 
 	io.emit("message", "Gate opened");
-	Log(Id, "requested to open the gate", "GRANTED");
+	logger.Log(Id, "requested to open the gate", "GRANTED");
 };
 
 function LockDoor(Id, Value) {
 	if (typeof Value != "boolean" || Value === DoorLocked) {
-		Log(Id, "received corrupt response", typeof Value);
+		logger.Log(Id, "received corrupt response", typeof Value);
 		return;
 	}
 
 	DoorLocked = Value;
 	io.emit("door_status", Value);
 
-	Log(Id, "updated the Door Lock status", Value.toString());
+	logger.Log(Id, "updated the Door Lock status", Value.toString());
 };
 
 function LockGate(Id, Value) {
 	if (typeof Value != "boolean" || Value === GateLocked) {
-		Log(Id, "received corrupt response", typeof Value);
+		logger.Log(Id, "received corrupt response", typeof Value);
 		return;
 	}
 
 	GateLocked = Value;
 	io.emit("gate_status", Value);
 
-	Log(Id, "updated the Gate Lock status", Value.toString());
+	logger.Log(Id, "updated the Gate Lock status", Value.toString());
 };
-
-Timestamp = () => ('[' +  new Date().toUTCString() + ']').green;
-
-Log = (User, Message, Details) => console.log(Timestamp(), User.white.bold, Message.white, Details.white.bold);
-
-Info = (User, Message, Details) => console.info(Timestamp(), User.gray.bold, Message.gray, Details.gray.bold);
-
-Warn = (User, Message, Details) => console.warn(Timestamp(), User.yellow.bold, Message.yellow, Details.yellow.bold);
 
 App.all("*", (req, res, next) => {
 	if (!req.hostname.endsWith(".lan"))
@@ -124,7 +116,7 @@ App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
 App.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 App.post("/report-violation", (req, res) => {
-	Warn(req.client.getPeerCertificate().subject.CN, "reported a", "CSP violation");
+	logger.Warn(req.client.getPeerCertificate().subject.CN, "reported a", "CSP violation");
 
 	res.status(204).end();
 });
@@ -140,4 +132,4 @@ io.on("connection", Socket => {
 	Socket.emit("gate_status", GateLocked);
 });
 
-Server.listen(3443, () => Info("HTTPS", "listening on port", "3443"));
+Server.listen(3443, () => logger.Info("HTTPS", "listening on port", "3443"));
