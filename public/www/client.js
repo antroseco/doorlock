@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function UpdateControls(Control, Value) {
 	if (typeof Value != "boolean") {
-		console.log("Received corrupt response from server: " + Value);
+		console.error("Received corrupt response from server: " + Value);
 		return;
 	}
 
@@ -32,7 +32,7 @@ function UpdateControls(Control, Value) {
 
 function Show(Message) {
 	if (typeof Message != "string") {
-		console.log("Received corrupt response from server: " + Message);
+		console.error("Received corrupt response from server: " + Message);
 		return;
 	}
 
