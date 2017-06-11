@@ -63,6 +63,7 @@ function OpenDoor(Id) {
 	rpio.write(8, rpio.HIGH);
 	DoorTimeout = setTimeout(() => rpio.write(8, rpio.LOW), 3000);
 
+	io.emit("message", "Door opened");
 	Log(Id, "requested to open the door", "GRANTED");
 };
 
@@ -76,6 +77,7 @@ function OpenGate(Id) {
 	rpio.write(22, rpio.HIGH);
 	GateTimeout = setTimeout(() => rpio.write(22, rpio.LOW), 1000);
 
+	io.emit("message", "Gate opened");
 	Log(Id, "requested to open the gate", "GRANTED");
 };
 
