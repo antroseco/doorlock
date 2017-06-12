@@ -36,5 +36,5 @@ function Show(Message) {
 		return;
 	}
 
-	Snackbar.show({ message: Message, timeout: 2750 });
+	Snackbar.show({ message: Message });
 };

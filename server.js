@@ -58,7 +58,7 @@ function OpenDoor(Id) {
 
 	clearTimeout(DoorTimeout);
 	rpio.write(8, rpio.HIGH);
-	DoorTimeout = setTimeout(() => rpio.write(8, rpio.LOW), 3000);
+	DoorTimeout = setTimeout(() => rpio.write(8, rpio.LOW), 500);
 
 	io.emit("message", "Door opened");
 	logger.Log(Id, "requested to open the door", "GRANTED");
