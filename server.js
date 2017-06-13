@@ -42,13 +42,25 @@ App.use(helmet.contentSecurityPolicy({
 rpio.open(8, rpio.OUTPUT, rpio.LOW);
 rpio.open(22, rpio.OUTPUT, rpio.LOW);
 rpio.open(26, rpio.INPUT, rpio.PULL_DOWN);
-// rpio.POLL_HIGH doesn't actually do anything in the current version of rpio
-rpio.poll(26, Pin => { if (rpio.read(Pin)) OpenDoor("GPIO Input"); }, rpio.POLL_HIGH);
+rpio.poll(26, HandleGPIOInput, rpio.POLL_HIGH);
 
 var DoorLocked = false;
 var GateLocked = false;
 var DoorTimeout = null;
 var GateTimeout = null;
+var GPIOTimeout = false;
+
+function HandleGPIOInput(Pin) {
+// POLL_HIGH doesn't do anything, so confirm that this is a rising edge
+	if (!GPIOTimeout && rpio.read(Pin)) {
+		GPIOTimeout = true;
+		setTimeout(() => GPIOTimeout = false, 4000);
+
+		OpenDoor("GPIO Input");
+	} else {
+		logger.Info("GPIO Input", "signal was", "debounced");
+	}
+};
 
 function OpenDoor(Id) {
 	if (DoorLocked) {
