@@ -39,7 +39,7 @@ App.use(helmet.contentSecurityPolicy({
 	}
 }));
 
-rpio.open(8, rpio.OUTPUT, rpio.LOW);
+rpio.open(12, rpio.OUTPUT, rpio.LOW);
 rpio.open(22, rpio.OUTPUT, rpio.LOW);
 rpio.open(26, rpio.INPUT, rpio.PULL_DOWN);
 rpio.poll(26, HandleGPIOInput, rpio.POLL_HIGH);
@@ -69,8 +69,8 @@ function OpenDoor(Id) {
 	}
 
 	clearTimeout(DoorTimeout);
-	rpio.write(8, rpio.HIGH);
-	DoorTimeout = setTimeout(() => rpio.write(8, rpio.LOW), 500);
+	rpio.write(12, rpio.HIGH);
+	DoorTimeout = setTimeout(() => rpio.write(12, rpio.LOW), 500);
 
 	io.emit("message", "Door opened");
 	logger.Log(Id, "requested to open the door", "GRANTED");
