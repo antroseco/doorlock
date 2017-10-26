@@ -27,6 +27,8 @@ App.use(helmet.contentSecurityPolicy({
 		defaultSrc: ["'none'"],
 		styleSrc: ["'self'"],
 		scriptSrc: ["'self'"],
+		imgSrc: ["'self'"],
+		manifestSrc: ["'self'"],
 		connectSrc: ["'self'", "wss:"],
 		reportUri: "/report-violation",
 		blockAllMixedContent: true
