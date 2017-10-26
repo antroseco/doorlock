@@ -50,9 +50,19 @@ var DoorTimeout = null;
 var GateTimeout = null;
 var GPIOTimeout = false;
 
-function HandleGPIOInput(Pin) {
+async function DebounceGPIO(Pin) {
+	let Values = [];
+	for (let i = 0; i <=3 ; ++i) {
+		Values[i] = new Promise(resolve =>
+			setTimeout(() => resolve(rpio.read(Pin)), 2 ** (3 * i)));
+	}
+
+	return Values.reduce(async (x, y) => await x && await y);
+};
+
+async function HandleGPIOInput(Pin) {
 // POLL_HIGH doesn't do anything, so confirm that this is a rising edge
-	if (!GPIOTimeout && rpio.read(Pin)) {
+	if (!GPIOTimeout && await DebounceGPIO(Pin)) {
 		GPIOTimeout = true;
 		setTimeout(() => GPIOTimeout = false, 4000);
 
