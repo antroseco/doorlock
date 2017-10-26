@@ -7,7 +7,7 @@
     "colors": "^1.1.2",
     "express": "^4.16.2",
     "helmet": "^3.9.0",
-    "material-components-web": "^0.12.1",
+    "material-components-web": "^0.23.0",
     "rpio": "^0.9.19",
     "snyk": "^1.46.0",
     "socket.io": "^2.0.4"
