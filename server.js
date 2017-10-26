@@ -17,14 +17,7 @@ const App = express();
 const Server = require("https").createServer(HttpsOptions, App);
 
 const io = require("socket.io")();
-io.origins((Origin, Callback) => {
-	const Result = Origin === "https://raspberrypi.lan/";
-
-	if (!Result)
-		logger.Warn(Origin, "rejected socket connection from", "invalid origin");
-
-	Callback(null, Result);
-});
+io.origins(["raspberrypi.lan:443", "192.168.1.254:443"]);
 io.attach(Server);
 
 const helmet = require("helmet");
@@ -34,7 +27,7 @@ App.use(helmet.contentSecurityPolicy({
 		defaultSrc: ["'none'"],
 		styleSrc: ["'self'"],
 		scriptSrc: ["'self'"],
-		connectSrc: ["'self'", "wss://raspberrypi.lan"],
+		connectSrc: ["'self'", "wss:"],
 		reportUri: "/report-violation"
 	}
 }));
@@ -123,13 +116,6 @@ function LockGate(Id, Value) {
 
 	logger.Log(Id, "updated the Gate Lock status", Value.toString());
 };
-
-App.all("*", (req, res, next) => {
-	if (!req.hostname.endsWith(".lan"))
-		res.redirect(301, "https://raspberrypi.lan" + req.originalUrl);
-	else
-		next();
-});
 
 App.use(express.static(path.join(__dirname, "public", "www")));
 App.use(express.static(path.join(__dirname, "node_modules", "material-components-web", "dist")));
