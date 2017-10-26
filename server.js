@@ -45,7 +45,7 @@ var GPIOTimeout = false;
 
 async function DebounceGPIO(Pin) {
 	let Values = [];
-	for (let i = 0; i <=3 ; ++i) {
+	for (let i = 0; i <= 3 ; ++i) {
 		Values[i] = new Promise(resolve =>
 			setTimeout(() => resolve(rpio.read(Pin)), 2 ** (3 * i)));
 	}
