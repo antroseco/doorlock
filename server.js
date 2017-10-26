@@ -28,7 +28,8 @@ App.use(helmet.contentSecurityPolicy({
 		styleSrc: ["'self'"],
 		scriptSrc: ["'self'"],
 		connectSrc: ["'self'", "wss:"],
-		reportUri: "/report-violation"
+		reportUri: "/report-violation",
+		blockAllMixedContent: true
 	}
 }));
 
