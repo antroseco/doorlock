@@ -120,11 +120,9 @@ function LockGate(Id, Value) {
 	logger.Log(Id, "updated the Gate Lock status", Value.toString());
 };
 
-App.use(express.static(path.join(__dirname, "public", "www")));
-App.use(express.static(path.join(__dirname, "node_modules", "material-components-web", "dist")));
-App.use("/ca", express.static(path.join(__dirname, "public", "ca")));
-
-App.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+App.use(express.static(path.join(__dirname, "public", "www"), { maxAge: "7d" }));
+App.use(express.static(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: "7d", immutable: true }));
+App.use("/ca", express.static(path.join(__dirname, "public", "ca"), { maxAge: "28d", immutable: true }));
 
 App.post("/report-violation", (req, res) => {
 	logger.Warn(req.client.getPeerCertificate().subject.CN, "reported a", "CSP violation");
