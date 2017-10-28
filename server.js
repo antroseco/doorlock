@@ -16,6 +16,9 @@ const HttpsOptions = {
 const App = express();
 const Server = require("https").createServer(HttpsOptions, App);
 
+const shrinkRay = require("shrink-ray");
+App.use(shrinkRay());
+
 const io = require("socket.io")();
 io.origins(["raspberrypi.lan:443", "192.168.1.254:443"]);
 io.attach(Server);
