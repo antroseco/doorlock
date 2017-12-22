@@ -9,10 +9,10 @@ const Gate = new hardware.Controller("gate", 22);
 const GPIO = new hardware.Monitor("gpio input", 26, Name => Door.Open(Name));
 
 const HttpsOptions = {
-	key: fs.readFileSync(path.join(__dirname, "private", "raspberrypi_lan.server.key")),
+	key:  fs.readFileSync(path.join(__dirname, "private",      "raspberrypi_lan.server.key")),
 	cert: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.server.crt")),
-	crl: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crl")),
-	ca: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crt")),
+	crl:  fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crl")),
+	ca:   fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crt")),
 	requestCert: true,
 	rejectUnauthorized: true
 };
