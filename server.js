@@ -58,8 +58,8 @@ function RegisterComponent(Socket, Id, Component) {
 			io.emit("message", Component.Name + " opened");
 	});
 	Socket.on(Component.Name + "_lock", Value => {
-		Component.Lock(Id, Value);
-		io.emit(Component.Name + "_status", Component.Locked);
+		if (Component.Lock(Id, Value))
+			io.emit(Component.Name + "_status", Component.Locked);
 	});
 	Socket.emit(Component.Name + "_status", Component.Locked);
 }
