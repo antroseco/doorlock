@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	Socket.on("door_status", UpdateControls.bind(null, "door"));
 	Socket.on("gate_status", UpdateControls.bind(null, "gate"));
 
-	document.getElementById("door-button").addEventListener("click", Socket.emit.bind(Socket, "open"));
-	document.getElementById("gate-button").addEventListener("click", Socket.emit.bind(Socket, "gate"));
+	document.getElementById("door-button").addEventListener("click", Socket.emit.bind(Socket, "door_open"));
+	document.getElementById("gate-button").addEventListener("click", Socket.emit.bind(Socket, "gate_open"));
 
 	document.getElementById("door-toggle").addEventListener("click", () =>
 		Socket.emit("door_lock", document.getElementById("door-toggle").checked));

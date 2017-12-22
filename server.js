@@ -52,29 +52,23 @@ App.post("/report-violation", (req, res) => {
 	res.status(204).end();
 });
 
+function RegisterComponent(Socket, Id, Component) {
+	Socket.on(Component.Name + "_open", () => {
+		if (Component.Open(Id))
+			io.emit("message", Component.Name + " opened");
+	});
+	Socket.on(Component.Name + "_lock", Value => {
+		Component.Lock(Id, Value);
+		io.emit(Component.Name + "_status", Component.Locked);
+	});
+	Socket.emit(Component.Name + "_status", Component.Locked);
+}
+
 io.on("connection", Socket => {
 	const Id = Socket.client.request.client.getPeerCertificate().subject.CN;
 
-	Socket.on("open", () => {
-		if (Door.Open(Id))
-			io.emit("message", "Door opened");
-	});
-	Socket.on("gate", () => {
-		if (Gate.Open(Id))
-			io.emit("message", "Gate opened")
-	});
-
-	Socket.on("door_lock", Value => {
-		Door.Lock(Id, Value);
-		io.emit("door_status", Door.Locked);
-	});
-	Socket.on("gate_lock", Value => {
-		Gate.Lock(Id, Value);
-		io.emit("gate_status", Gate.Locked);
-	});
-
-	Socket.emit("door_status", Door.Locked);
-	Socket.emit("gate_status", Gate.Locked);
+	RegisterComponent(Socket, Id, Door);
+	RegisterComponent(Socket, Id, Gate);
 });
 
 Server.listen(3443, () => logger.Info("HTTPS", "listening on port", "3443"));
