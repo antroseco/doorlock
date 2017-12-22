@@ -14,7 +14,7 @@ class Monitor {
 
 	async Process() {
 // POLL_HIGH doesn't do anything, so confirm that this is a rising edge
-		if (!this.Timeout && await this.Debounce(this.Pin)) {
+		if (!this.Timeout && await this.Debounce()) {
 			this.Timeout = true;
 			setTimeout(() => this.Timeout = false, 4000);
 
