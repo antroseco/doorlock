@@ -63,7 +63,7 @@ function RegisterComponent(Socket, Id, Component) {
 }
 
 io.on("connection", Socket => {
-	const Id = Socket.client.request.client.getPeerCertificate().subject.CN;
+	const Id = Socket.client.request.socket.getPeerCertificate().subject.CN;
 
 	RegisterComponent(Socket, Id, Door);
 	RegisterComponent(Socket, Id, Gate);
