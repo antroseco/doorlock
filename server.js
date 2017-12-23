@@ -1,6 +1,9 @@
 const path = require("path");
 const fs = require("fs");
-const express = require("express");
+const Koa = require("koa");
+const serve = require("koa-static");
+const mount = require("koa-mount");
+const ms = require("ms");
 const logger = require("./logger.js");
 const hardware = require("./hardware.js");
 
@@ -17,17 +20,17 @@ const HttpsOptions = {
 	rejectUnauthorized: true
 };
 
-const App = express();
-const Server = require("https").createServer(HttpsOptions, App);
+const App = new Koa();
+const Server = require("https").createServer(HttpsOptions, App.callback());
 
-const shrinkRay = require("shrink-ray");
-App.use(shrinkRay());
+const compress = require("koa-compress");
+App.use(compress());
 
 const io = require("socket.io")();
 io.origins(["raspberrypi.lan:443", "192.168.1.254:443"]);
 io.attach(Server);
 
-const helmet = require("helmet");
+const helmet = require("koa-helmet");
 App.use(helmet());
 App.use(helmet.contentSecurityPolicy({
 	directives: {
@@ -41,9 +44,9 @@ App.use(helmet.contentSecurityPolicy({
 	}
 }));
 
-App.use(express.static(path.join(__dirname, "public", "www"), { maxAge: "7d" }));
-App.use(express.static(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: "7d", immutable: true }));
-App.use("/ca", express.static(path.join(__dirname, "public", "ca"), { maxAge: "28d", immutable: true }));
+App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
+App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
+App.use(mount("/ca", serve(path.join(__dirname, "public", "ca"), { maxAge: ms("28d"), immutable: true, gzip: false, brotli: false })));
 
 function RegisterComponent(Socket, Id, Component) {
 	Socket.on(Component.Name + "_open", () => {
