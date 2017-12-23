@@ -28,6 +28,7 @@ App.use(compress());
 
 const io = require("socket.io")();
 io.origins(["raspberrypi.lan:443", "192.168.1.254:443"]);
+io.serveClient(false);
 io.attach(Server);
 
 const helmet = require("koa-helmet");
@@ -46,6 +47,7 @@ App.use(helmet.contentSecurityPolicy({
 
 App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
 App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
+App.use(serve(path.join(__dirname, "node_modules", "socket.io-client", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
 App.use(mount("/ca", serve(path.join(__dirname, "public", "ca"), { maxAge: ms("28d"), immutable: true, gzip: false, brotli: false })));
 
 function RegisterComponent(Socket, Id, Component) {
