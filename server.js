@@ -37,7 +37,6 @@ App.use(helmet.contentSecurityPolicy({
 		imgSrc: ["'self'"],
 		manifestSrc: ["'self'"],
 		connectSrc: ["'self'", "wss:"],
-		reportUri: "/report-violation",
 		blockAllMixedContent: true
 	}
 }));
@@ -45,12 +44,6 @@ App.use(helmet.contentSecurityPolicy({
 App.use(express.static(path.join(__dirname, "public", "www"), { maxAge: "7d" }));
 App.use(express.static(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: "7d", immutable: true }));
 App.use("/ca", express.static(path.join(__dirname, "public", "ca"), { maxAge: "28d", immutable: true }));
-
-App.post("/report-violation", (req, res) => {
-	logger.Warn(req.client.getPeerCertificate().subject.CN, "reported a", "CSP violation");
-
-	res.status(204).end();
-});
 
 function RegisterComponent(Socket, Id, Component) {
 	Socket.on(Component.Name + "_open", () => {
