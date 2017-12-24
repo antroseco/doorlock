@@ -13,7 +13,7 @@
     "material-components-web": "^0.27.0",
     "ms": "^2.1.1",
     "rpio": "^0.9.20",
-    "snyk": "^1.62.0",
+    "snyk": "^1.62.2",
     "socket.io": "^2.0.4"
   },
   "devDependencies": {},
