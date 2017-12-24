@@ -1,14 +1,14 @@
 const Socket = io();
-var Snackbar = undefined;
 
 document.addEventListener("DOMContentLoaded", () => {
 	RegisterControls("door");
 	RegisterControls("gate");
 
 	mdc.autoInit();
-	Snackbar = mdc.snackbar.MDCSnackbar.attachTo(document.getElementById("snackbar"));
+	const Snackbar = mdc.snackbar.MDCSnackbar.attachTo(document.getElementById("snackbar"));
 
-	Socket.on("message", Show);
+	Socket.on("message", Data =>
+		Snackbar.show({ message: Data }));
 });
 
 function RegisterControls(Control) {
@@ -29,13 +29,4 @@ function UpdateControls(Control, Value) {
 	document.getElementById(Control + "-toggle").checked = Value;
 	document.getElementById(Control + "-toggle").disabled = false;
 	document.getElementById(Control + "-button").disabled = Value;
-};
-
-function Show(Message) {
-	if (typeof Message != "string") {
-		console.error("Received corrupt response from server: " + Message);
-		return;
-	}
-
-	Snackbar.show({ message: Message });
 };
