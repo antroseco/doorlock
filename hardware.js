@@ -1,3 +1,5 @@
+"use strict";
+
 const rpio = require("rpio");
 const logger = require("./logger.js");
 

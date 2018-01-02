@@ -1,3 +1,5 @@
+"use strict";
+
 const Socket = io();
 
 document.addEventListener("DOMContentLoaded", () => {
