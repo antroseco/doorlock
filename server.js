@@ -14,8 +14,8 @@ const Gate = new hardware.Controller("gate", 22);
 const GPIO = new hardware.Monitor("gpio input", 26, Name => Door.Open(Name));
 
 const HttpsOptions = {
-	key:  fs.readFileSync(path.join(__dirname, "private",      "raspberrypi_lan.server.key")),
-	cert: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.server.crt")),
+	key:  fs.readFileSync(path.join(__dirname, "private",      "raspberrypi_home.server.key")),
+	cert: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_home.server.crt")),
 	crl:  fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crl")),
 	ca:   fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crt")),
 	requestCert: true,
@@ -29,7 +29,7 @@ const compress = require("koa-compress");
 App.use(compress());
 
 const io = require("socket.io")();
-io.origins(["raspberrypi.lan:443", "192.168.1.254:443"]);
+io.origins(["raspberrypi.home:443", "192.168.1.254:443"]);
 io.serveClient(false);
 io.attach(Server);
 

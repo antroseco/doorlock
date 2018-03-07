@@ -1,0 +1,120 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            93:25:80:f1:ef:bf:25:ed
+    Signature Algorithm: sha512WithRSAEncryption
+        Issuer: C=CY, ST=Nicosia, L=Palaipafou 7, Strovolos, O=Andreas Economides, OU=Internet Encryption Division, CN=Andreas Economides Root Certificate Authority
+        Validity
+            Not Before: Mar  7 16:16:13 2018 GMT
+            Not After : Mar  6 16:16:13 2023 GMT
+        Subject: C=CY, ST=Nicosia, L=Palaipafou 7, Strovolos, O=Andreas Economides, OU=Internet Encryption Division, CN=raspberrypi.home
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:a8:2f:ce:5e:f0:4f:23:5d:48:9d:dd:f7:6e:6d:
+                    80:35:f9:8e:fd:72:54:8a:fb:98:3c:84:24:d5:49:
+                    35:ed:b6:45:de:fd:36:58:f8:04:6d:f3:f8:22:38:
+                    4d:df:f2:9a:a5:60:3c:6f:52:3c:a2:3f:7a:e7:fe:
+                    d7:b2:e2:c5:07:f0:fc:88:43:57:3f:b2:bd:19:4e:
+                    e4:fb:78:41:c1:eb:f3:cb:56:95:7d:be:ee:04:5b:
+                    06:57:74:1d:10:64:7b:40:d3:e6:42:5e:32:9c:56:
+                    74:81:2f:13:40:93:21:71:e9:df:dd:3b:cc:49:03:
+                    e6:39:9d:ca:fa:30:08:0e:64:8a:53:cc:af:25:cd:
+                    d1:93:7c:98:52:39:ad:3a:87:69:00:da:83:03:37:
+                    62:fc:d6:79:9f:80:40:99:84:b4:ff:e2:ef:6c:c8:
+                    71:6a:7b:fa:da:88:c2:86:41:11:94:13:80:3d:8e:
+                    58:72:82:62:38:81:1a:00:96:f2:e9:6d:59:53:c2:
+                    ee:10:ae:c6:81:11:8d:a8:01:44:91:cd:be:e1:8a:
+                    e8:5d:c2:a3:29:ce:74:6a:3b:34:95:aa:17:df:fd:
+                    db:d8:cc:88:be:d0:7e:de:c7:ce:d9:d9:ca:2a:ed:
+                    22:f6:b4:cf:9b:96:c5:4d:15:d3:b3:d0:30:a1:e4:
+                    ef:19
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            Netscape Cert Type: 
+                SSL Server
+            Netscape Revocation Url: 
+                http://raspberrypi.lan/ca/raspberrypi_lan.ca.crl
+            X509v3 Key Usage: critical
+                Key Encipherment, Key Agreement
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Issuer Alternative Name: 
+                URI:http://raspberrypi.lan/ca/raspberrypi_lan.ca.crt, DNS:raspberrypi.lan, DNS:*.raspberrypi.lan, email:antroseconomides@hotmail.com
+            X509v3 Subject Alternative Name: 
+                URI:http://raspberrypi.lan/ca/raspberrypi_lan.ca.crt, email:antroseconomides@hotmail.com, DNS:raspberrypi.home, IP Address:192.168.1.254
+            X509v3 Subject Key Identifier: 
+                48:D4:13:23:81:36:83:A4:16:DE:05:98:D6:46:09:AC:8D:D0:C9:18
+            X509v3 Authority Key Identifier: 
+                keyid:0A:D9:B3:A4:4E:65:D4:EB:83:41:CD:01:25:F3:31:0E:DE:6E:B3:F2
+                DirName:/C=CY/ST=Nicosia/L=Palaipafou 7, Strovolos/O=Andreas Economides/OU=Internet Encryption Division/CN=Andreas Economides Root Certificate Authority
+                serial:93:25:80:F1:EF:BF:25:E1
+
+            Authority Information Access: 
+                CA Issuers - URI:http://raspberrypi.lan/ca/raspberrypi_lan.ca.crt
+
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://raspberrypi.lan/ca/raspberrypi_lan.ca.crl
+
+    Signature Algorithm: sha512WithRSAEncryption
+         35:6a:ce:8b:1d:f6:f5:21:a2:d6:e5:f2:66:fb:22:ed:29:38:
+         3f:84:72:c4:42:98:8d:8d:b8:f0:de:96:18:2b:57:67:dd:e4:
+         c9:85:b9:cf:1f:61:bd:52:c4:48:51:a1:8f:c1:9a:3c:f5:87:
+         e6:d4:bc:ac:d6:c4:4d:7b:96:b7:f2:74:a4:c5:7e:11:79:9a:
+         a5:c4:41:c2:fb:85:40:d6:be:ba:fb:98:7d:8b:45:9f:ad:ef:
+         6f:bf:72:04:d3:08:0d:03:37:13:51:f1:c8:b8:3d:e4:60:e8:
+         03:c4:25:98:ea:66:5b:d6:1b:dd:56:26:82:c2:db:ab:85:39:
+         e8:31:17:41:e2:05:03:27:18:08:7a:bc:8a:76:bf:cb:b4:9c:
+         a8:5e:27:7a:75:40:4b:54:54:f7:bb:b0:b2:bd:00:24:14:0b:
+         4a:b3:5b:ed:fb:76:46:56:07:14:3d:bf:6b:cd:4f:05:4a:15:
+         1e:fc:19:6b:a5:c7:75:6f:6a:45:dc:21:d9:26:3a:ad:bc:87:
+         92:19:06:0c:4f:ca:99:09:6d:32:ad:e2:90:c5:26:4d:12:43:
+         bf:6e:2c:1c:c8:ec:72:b6:6d:36:57:1d:36:d7:98:16:70:1c:
+         c3:72:bb:28:e2:9b:b2:92:ca:30:d2:30:91:2a:96:30:43:87:
+         8d:45:88:5a
+-----BEGIN CERTIFICATE-----
+MIIHBjCCBe6gAwIBAgIJAJMlgPHvvyXtMA0GCSqGSIb3DQEBDQUAMIG9MQswCQYD
+VQQGEwJDWTEQMA4GA1UECBMHTmljb3NpYTEgMB4GA1UEBxMXUGFsYWlwYWZvdSA3
+LCBTdHJvdm9sb3MxGzAZBgNVBAoTEkFuZHJlYXMgRWNvbm9taWRlczElMCMGA1UE
+CxMcSW50ZXJuZXQgRW5jcnlwdGlvbiBEaXZpc2lvbjE2MDQGA1UEAxMtQW5kcmVh
+cyBFY29ub21pZGVzIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5MB4XDTE4MDMw
+NzE2MTYxM1oXDTIzMDMwNjE2MTYxM1owgaAxCzAJBgNVBAYTAkNZMRAwDgYDVQQI
+EwdOaWNvc2lhMSAwHgYDVQQHExdQYWxhaXBhZm91IDcsIFN0cm92b2xvczEbMBkG
+A1UEChMSQW5kcmVhcyBFY29ub21pZGVzMSUwIwYDVQQLExxJbnRlcm5ldCBFbmNy
+eXB0aW9uIERpdmlzaW9uMRkwFwYDVQQDExByYXNwYmVycnlwaS5ob21lMIIBIjAN
+BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqC/OXvBPI11Ind33bm2ANfmO/XJU
+ivuYPIQk1Uk17bZF3v02WPgEbfP4IjhN3/KapWA8b1I8oj965/7XsuLFB/D8iENX
+P7K9GU7k+3hBwevzy1aVfb7uBFsGV3QdEGR7QNPmQl4ynFZ0gS8TQJMhcenf3TvM
+SQPmOZ3K+jAIDmSKU8yvJc3Rk3yYUjmtOodpANqDAzdi/NZ5n4BAmYS0/+LvbMhx
+anv62ojChkERlBOAPY5YcoJiOIEaAJby6W1ZU8LuEK7GgRGNqAFEkc2+4YroXcKj
+Kc50ajs0laoX3/3b2MyIvtB+3sfO2dnKKu0i9rTPm5bFTRXTs9AwoeTvGQIDAQAB
+o4IDIjCCAx4wDAYDVR0TAQH/BAIwADARBglghkgBhvhCAQEEBAMCBkAwPwYJYIZI
+AYb4QgEDBDIWMGh0dHA6Ly9yYXNwYmVycnlwaS5sYW4vY2EvcmFzcGJlcnJ5cGlf
+bGFuLmNhLmNybDAOBgNVHQ8BAf8EBAMCAygwEwYDVR0lBAwwCgYIKwYBBQUHAwEw
+fQYDVR0SBHYwdIYwaHR0cDovL3Jhc3BiZXJyeXBpLmxhbi9jYS9yYXNwYmVycnlw
+aV9sYW4uY2EuY3J0gg9yYXNwYmVycnlwaS5sYW6CESoucmFzcGJlcnJ5cGkubGFu
+gRxhbnRyb3NlY29ub21pZGVzQGhvdG1haWwuY29tMHEGA1UdEQRqMGiGMGh0dHA6
+Ly9yYXNwYmVycnlwaS5sYW4vY2EvcmFzcGJlcnJ5cGlfbGFuLmNhLmNydIEcYW50
+cm9zZWNvbm9taWRlc0Bob3RtYWlsLmNvbYIQcmFzcGJlcnJ5cGkuaG9tZYcEwKgB
+/jAdBgNVHQ4EFgQUSNQTI4E2g6QW3gWY1kYJrI3QyRgwgfIGA1UdIwSB6jCB54AU
+CtmzpE5l1OuDQc0BJfMxDt5us/KhgcOkgcAwgb0xCzAJBgNVBAYTAkNZMRAwDgYD
+VQQIEwdOaWNvc2lhMSAwHgYDVQQHExdQYWxhaXBhZm91IDcsIFN0cm92b2xvczEb
+MBkGA1UEChMSQW5kcmVhcyBFY29ub21pZGVzMSUwIwYDVQQLExxJbnRlcm5ldCBF
+bmNyeXB0aW9uIERpdmlzaW9uMTYwNAYDVQQDEy1BbmRyZWFzIEVjb25vbWlkZXMg
+Um9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHmCCQCTJYDx778l4TBMBggrBgEFBQcB
+AQRAMD4wPAYIKwYBBQUHMAKGMGh0dHA6Ly9yYXNwYmVycnlwaS5sYW4vY2EvcmFz
+cGJlcnJ5cGlfbGFuLmNhLmNydDBBBgNVHR8EOjA4MDagNKAyhjBodHRwOi8vcmFz
+cGJlcnJ5cGkubGFuL2NhL3Jhc3BiZXJyeXBpX2xhbi5jYS5jcmwwDQYJKoZIhvcN
+AQENBQADggEBADVqzosd9vUhotbl8mb7Iu0pOD+EcsRCmI2NuPDelhgrV2fd5MmF
+uc8fYb1SxEhRoY/Bmjz1h+bUvKzWxE17lrfydKTFfhF5mqXEQcL7hUDWvrr7mH2L
+RZ+t72+/cgTTCA0DNxNR8ci4PeRg6APEJZjqZlvWG91WJoLC26uFOegxF0HiBQMn
+GAh6vIp2v8u0nKheJ3p1QEtUVPe7sLK9ACQUC0qzW+37dkZWBxQ9v2vNTwVKFR78
+GWulx3VvakXcIdkmOq28h5IZBgxPypkJbTKt4pDFJk0SQ79uLBzI7HK2bTZXHTbX
+mBZwHMNyuyjim7KSyjDSMJEqljBDh41FiFo=
+-----END CERTIFICATE-----
