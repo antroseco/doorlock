@@ -71,5 +71,5 @@ io.on("connection", Socket => {
 	RegisterComponent(Socket, Id, Gate);
 });
 
-Server.listen(443, () =>
+Server.listen(443, "192.168.1.254", () =>
 	logger.Info("HTTPS", "listening on port", "443"));
