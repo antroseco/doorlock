@@ -16,8 +16,8 @@ const GPIO = new hardware.Monitor("gpio input", 26, Name => Door.Open(Name));
 const HttpsOptions = {
 	key:  fs.readFileSync(path.join(__dirname, "private",      "raspberrypi_home.server.key")),
 	cert: fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_home.server.crt")),
-	crl:  fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crl")),
-	ca:   fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_lan.ca.crt")),
+	crl:  fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_home.ca.crl")),
+	ca:   fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_home.ca.crt")),
 	requestCert: true,
 	rejectUnauthorized: true
 };
