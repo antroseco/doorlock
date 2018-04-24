@@ -47,6 +47,14 @@ App.use(helmet.contentSecurityPolicy({
 	}
 }));
 
+const RestApi = require("./api.js");
+const Api = new RestApi();
+App.use(Api.routes);
+App.use(Api.allowedMethods);
+
+Api.Register(Door);
+Api.Register(Gate);
+
 App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
 App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
 App.use(serve(path.join(__dirname, "node_modules", "socket.io-client", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));

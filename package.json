@@ -9,6 +9,7 @@
     "koa-compress": "^2.0.0",
     "koa-helmet": "^3.3.0",
     "koa-mount": "^3.0.0",
+    "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
     "material-components-web": "^0.29.0",
     "ms": "^2.1.1",
@@ -22,8 +23,7 @@
     "url": "https://github.com/KimJongSkill/doorlock.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "npm run snyk-protect"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Andreas Economides",
   "license": "GPL-3.0",
