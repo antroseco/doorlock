@@ -2,7 +2,6 @@
 
 const Router = require("koa-router");
 const Hardware = require("./hardware.js")
-const { URL } = require("url");
 
 class RestApi {
     constructor() {

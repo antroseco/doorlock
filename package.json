@@ -26,6 +26,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npx snyk protect"
   },
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "author": "Andreas Economides",
   "license": "GPL-3.0",
   "snyk": true
