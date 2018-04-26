@@ -2,6 +2,7 @@
 
 const rpio = require("rpio");
 const logger = require("./logger.js");
+const EventEmitter = require("events");
 
 class Monitor {
 	constructor(Name, Pin, Action) {
@@ -37,8 +38,10 @@ class Monitor {
 	}
 }
 
-class Controller {
+class Controller extends EventEmitter {
 	constructor(Name, Pin) {
+		super();
+
 		this.Name = Name;
 		this.Pin = Pin;
 		this.Locked = false;
@@ -58,6 +61,7 @@ class Controller {
 		this.Timeout = setTimeout(() => rpio.write(this.Pin, rpio.LOW), 500);
 
 		logger.Log(Id, "requested to open the " + this.Name, "GRANTED");
+		this.emit("open");
 
 		return true;
 	}
@@ -71,6 +75,7 @@ class Controller {
 		this.Locked = Value;
 
 		logger.Log(Id, "updated the " + this.Name + " lock status", Value.toString());
+		this.emit("lock", Value);
 
 		return true;
 	}

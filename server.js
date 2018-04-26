@@ -62,15 +62,26 @@ App.use(mount("/ca", serve(path.join(__dirname, "public", "ca"), { maxAge: ms("2
 
 function RegisterComponent(Socket, Id, Component) {
 	Socket.on(Component.Name + "_open", () => {
-		if (Component.Open(Id))
-			io.emit("message", Component.Name + " opened");
+		Component.Open(Id);
 	});
 	Socket.on(Component.Name + "_lock", Value => {
-		if (Component.Lock(Id, Value))
-			io.emit(Component.Name + "_status", Component.Locked);
+		Component.Lock(Id, Value)
 	});
 	Socket.emit(Component.Name + "_status", Component.Locked);
 }
+
+function NotifyOpen() {
+	io.emit("message", this.Name + " opened");
+}
+
+function NotifyLock(Value) {
+	io.emit(this.Name + "_status", this.Locked);
+}
+
+Door.on("open", NotifyOpen);
+Door.on("lock", NotifyLock);
+Gate.on("open", NotifyOpen);
+Gate.on("lock", NotifyLock);
 
 io.on("connection", Socket => {
 	const Id = Socket.client.request.socket.getPeerCertificate().subject.CN;
