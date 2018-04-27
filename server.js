@@ -28,11 +28,6 @@ const Server = require("https").createServer(HttpsOptions, App.callback());
 const compress = require("koa-compress");
 App.use(compress());
 
-const io = require("socket.io")();
-io.origins(["raspberrypi.home:443", "192.168.1.254:443"]);
-io.serveClient(false);
-io.attach(Server);
-
 const helmet = require("koa-helmet");
 App.use(helmet());
 App.use(helmet.contentSecurityPolicy({
@@ -55,9 +50,27 @@ App.use(Api.allowedMethods);
 Api.Register(Door);
 Api.Register(Gate);
 
+// TODO Check origin/referer
+const SSE = require("./sse");
+const EventManager = new SSE();
+App.use(mount("/sse", EventManager.SSE));
+
+Door.on("open", () => {
+	EventManager.Broadcast("message", "Door opened");
+});
+Door.on("lock", Value => {
+	EventManager.Broadcast("door_status", JSON.stringify(Value));
+});
+
+Gate.on("open", () => {
+	EventManager.Broadcast("message", "Gate opened");
+});
+Gate.on("lock", Value => {
+	EventManager.Broadcast("gate_status", JSON.stringify(Value));
+});
+
 App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
 App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
-App.use(serve(path.join(__dirname, "node_modules", "socket.io-client", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
 App.use(mount("/ca", serve(path.join(__dirname, "public", "ca"), { maxAge: ms("28d"), immutable: true, gzip: false, brotli: false })));
 
 function RegisterComponent(Socket, Id, Component) {
@@ -69,26 +82,6 @@ function RegisterComponent(Socket, Id, Component) {
 	});
 	Socket.emit(Component.Name + "_status", Component.Locked);
 }
-
-function NotifyOpen() {
-	io.emit("message", this.Name + " opened");
-}
-
-function NotifyLock(Value) {
-	io.emit(this.Name + "_status", this.Locked);
-}
-
-Door.on("open", NotifyOpen);
-Door.on("lock", NotifyLock);
-Gate.on("open", NotifyOpen);
-Gate.on("lock", NotifyLock);
-
-io.on("connection", Socket => {
-	const Id = Socket.client.request.socket.getPeerCertificate().subject.CN;
-
-	RegisterComponent(Socket, Id, Door);
-	RegisterComponent(Socket, Id, Gate);
-});
 
 Server.listen(443, "192.168.1.254", () =>
 	logger.Info("HTTPS", "listening on port", "443"));

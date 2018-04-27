@@ -1,6 +1,6 @@
 "use strict";
 
-const Socket = io();
+const Events = new EventSource("/sse");
 let Snackbar = undefined;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
 	RegisterControls("door");
 	RegisterControls("gate");
 
-	Socket.on("message", Data =>
-		Snackbar.show({ message: Data }));
+	Events.addEventListener("message", Event =>
+		Snackbar.show({ message: Event.data }));
 });
 
 async function RegisterControls(Control) {
-	Socket.on(Control + "_status", Value => {
-		UpdateControls(Control, Value);
+	Events.addEventListener(Control + "_status", Event => {
+		UpdateControls(Control, JSON.parse(Event.data));
 	});
 
 	document.getElementById(Control + "-button").addEventListener("click", () => {
