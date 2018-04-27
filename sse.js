@@ -33,8 +33,6 @@ class EventStream extends Transform {
 
 class EventManager {
     constructor() {
-        super();
-
         this.Clients = [];
     };
 
