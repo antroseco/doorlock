@@ -47,26 +47,23 @@ const Api = new RestApi();
 App.use(Api.routes);
 App.use(Api.allowedMethods);
 
-Api.Register(Door);
-Api.Register(Gate);
-
 const SSE = require("./sse");
 const EventManager = new SSE();
 App.use(mount("/sse", EventManager.SSE));
 
-Door.on("open", () => {
-	EventManager.Broadcast("message", "Door opened");
-});
-Door.on("lock", Value => {
-	EventManager.Broadcast("door_status", JSON.stringify(Value));
-});
+function RegisterComponent(Component) {
+	Api.Register(Component);
 
-Gate.on("open", () => {
-	EventManager.Broadcast("message", "Gate opened");
-});
-Gate.on("lock", Value => {
-	EventManager.Broadcast("gate_status", JSON.stringify(Value));
-});
+	Component.on("open", () => {
+		EventManager.Broadcast("message", `${ Component.Name } opened`);
+	});
+	Component.on("lock", Value => {
+		EventManager.Broadcast(`${ Component.Name }_status`, JSON.stringify(Value));
+	});
+};
+
+RegisterComponent(Door);
+RegisterComponent(Gate);
 
 App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
 App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
