@@ -72,15 +72,5 @@ App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: f
 App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
 App.use(mount("/ca", serve(path.join(__dirname, "public", "ca"), { maxAge: ms("28d"), immutable: true, gzip: false, brotli: false })));
 
-function RegisterComponent(Socket, Id, Component) {
-	Socket.on(Component.Name + "_open", () => {
-		Component.Open(Id);
-	});
-	Socket.on(Component.Name + "_lock", Value => {
-		Component.Lock(Id, Value)
-	});
-	Socket.emit(Component.Name + "_status", Component.Locked);
-}
-
 Server.listen(443, "192.168.1.254", () =>
 	logger.Info("HTTPS", "listening on port", "443"));
