@@ -73,7 +73,7 @@ class EventManager {
     }
 };
 
-// module.exports = EventManager;
+module.exports = EventManager;
 
 // const Koa = require('koa');
 // const app = module.exports = new Koa();
