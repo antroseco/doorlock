@@ -50,7 +50,6 @@ App.use(Api.allowedMethods);
 Api.Register(Door);
 Api.Register(Gate);
 
-// TODO Check origin/referer
 const SSE = require("./sse");
 const EventManager = new SSE();
 App.use(mount("/sse", EventManager.SSE));
