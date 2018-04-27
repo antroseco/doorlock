@@ -74,16 +74,3 @@ class EventManager {
 };
 
 module.exports = EventManager;
-
-// const Koa = require('koa');
-// const app = module.exports = new Koa();
-
-// const Manager = new EventManager();
-// Manager.on("client", Client => {
-//     Client.Send("hello", "hi client");
-//     Manager.Broadcast("notice", "new client in town");
-//     Manager.Broadcast("clients", Manager.Clients);
-// });
-
-// app.use(Manager.SSE);
-// app.listen(8000);
