@@ -11,7 +11,7 @@ class EventStream extends Transform {
 
     _transform(Message, Encoding, Callback) {
         let Result = `event: ${ Message.Event }\n`;
-        
+
         const Data = Message.Data instanceof Array ? Message.Data : [ Message.Data ];
         for (const Chunk of Data) {
             Result += `data: ${ Chunk }\n`;
@@ -26,7 +26,7 @@ class EventStream extends Transform {
     Send(event, data) {
         this.write({
             Event: event,
-            Data: data 
+            Data: data
         });
     };
 };
@@ -51,19 +51,19 @@ class EventManager {
 
     Middleware(ctx) {
         ctx.assert(ctx.accepts("text/event-stream"), 403);
-    
+
         ctx.type = "text/event-stream; charset=utf-8";
         ctx.status = 200;
         ctx.set("Cache-Control", "no-cache");
         ctx.set("Connection", "keep-alive");
         ctx.flushHeaders();
-    
+
         ctx.req.setTimeout(ms("10m"));
         ctx.req.socket.setNoDelay(true);
-    
+
         ctx.body = this.Register();
     };
-    
+
     Broadcast(Event, Data) {
         for (const Client of this.Clients) {
             Client.Send(Event, Data);
