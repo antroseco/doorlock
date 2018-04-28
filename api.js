@@ -15,14 +15,16 @@ class RestApi {
             // Stateless CSRF protection
             .use(async (ctx, next) => {
                 if (ctx.headers.origin) {
-                    var RequestOrigin = ctx.headers.origin;
+                    var Origin = ctx.headers.origin;
                 } else if (ctx.headers.referer) {
                     const Referer = new URL(ctx.headers.referer);
 
-                    var RequestOrigin = Referer.origin;
+                    var Origin = Referer.origin;
                 }
 
-                ctx.assert(RequestOrigin == ctx.origin, 403);
+                ctx.assert(Origin == "https://192.168.1.254"
+                || Origin == "https://raspberrypi.home"
+                || Origin == "https://raspberrypi", 403);
 
                 await next();
             })

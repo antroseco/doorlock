@@ -53,7 +53,6 @@ class EventManager {
         ctx.type = "text/event-stream; charset=utf-8";
         ctx.status = 200;
         ctx.set("Cache-Control", "no-cache");
-        ctx.set("Connection", "keep-alive");
         ctx.flushHeaders();
 
         ctx.req.setTimeout(ms("10m"));

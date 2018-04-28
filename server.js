@@ -23,7 +23,7 @@ const HttpsOptions = {
 };
 
 const App = new Koa();
-const Server = require("https").createServer(HttpsOptions, App.callback());
+const Server = require("http2").createSecureServer(HttpsOptions, App.callback());
 
 const compress = require("koa-compress");
 App.use(compress());
@@ -70,4 +70,4 @@ App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "d
 App.use(mount("/ca", serve(path.join(__dirname, "public", "ca"), { maxAge: ms("28d"), immutable: true, gzip: false, brotli: false })));
 
 Server.listen(443, "192.168.1.254", () =>
-	logger.Info("HTTPS", "listening on port", "443"));
+	logger.Info("HTTP/2", "listening on port", "443"));
