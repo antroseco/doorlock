@@ -14,8 +14,7 @@
     "material-components-web": "^0.29.0",
     "ms": "^2.1.1",
     "rpio": "^0.9.20",
-    "snyk": "^1.69.10",
-    "socket.io": "^2.0.4"
+    "snyk": "^1.69.10"
   },
   "devDependencies": {},
   "repository": {
