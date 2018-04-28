@@ -29,16 +29,20 @@ const compress = require("koa-compress");
 App.use(compress());
 
 const helmet = require("koa-helmet");
-App.use(helmet());
-App.use(helmet.contentSecurityPolicy({
-	directives: {
-		defaultSrc: ["'none'"],
-		styleSrc: ["'self'"],
-		scriptSrc: ["'self'"],
-		imgSrc: ["'self'"],
-		manifestSrc: ["'self'"],
-		connectSrc: ["'self'", "wss:"],
-		blockAllMixedContent: true
+App.use(helmet({
+	frameguard: {
+		action: "deny"
+	},
+	contentSecurityPolicy: {
+		directives: {
+			defaultSrc: ["'none'"],
+			styleSrc: ["'self'"],
+			scriptSrc: ["'self'"],
+			imgSrc: ["'self'"],
+			manifestSrc: ["'self'"],
+			connectSrc: ["'self'"],
+			blockAllMixedContent: true
+		}
 	}
 }));
 
