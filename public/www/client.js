@@ -50,6 +50,7 @@ async function Fetch(Method, Url, Data) {
 		const Response = await fetch(Url, {
 			method: Method,
 			mode: "same-origin",
+			credentials: "same-origin",
 			redirect: "error",
 			body: Data
 		});
