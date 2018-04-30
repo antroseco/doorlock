@@ -16,7 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function RegisterControls(Control) {
 	Events.addEventListener(Control + "_status", Event => {
-		UpdateControls(Control, JSON.parse(Event.data));
+		try {
+			UpdateControls(Control, JSON.parse(Event.data));
+		} catch(error) {
+			Snackbar.show({ message: error });
+		}
 	});
 
 	document.getElementById(Control + "-button").addEventListener("click", () => {
@@ -30,12 +34,7 @@ function RegisterControls(Control) {
 };
 
 function UpdateControls(Control, Value) {
-	if (typeof Value != "boolean") {
-		console.error("Received corrupt response from server: " + Value);
-		return;
-	}
-
-	document.getElementById(Control + "-toggle").checked = Value;
+	document.getElementById(Control + "-toggle").checked  = Value;
 	document.getElementById(Control + "-toggle").disabled = false;
 	document.getElementById(Control + "-button").disabled = Value;
 };
