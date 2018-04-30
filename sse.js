@@ -1,5 +1,6 @@
 const { Transform } = require("stream");
 const ms = require("ms");
+const EventEmitter = require("events");
 
 class EventStream extends Transform {
     constructor() {
@@ -31,8 +32,10 @@ class EventStream extends Transform {
     };
 };
 
-class EventManager {
+class EventManager extends EventEmitter {
     constructor() {
+        super();
+
         this.Clients = [];
     };
 
@@ -43,6 +46,8 @@ class EventManager {
         Client.on("close", () => {
             this.Clients = this.Clients.filter(x => x != Client);
         });
+
+        this.emit("client", Client);
 
         return Client;
     }
