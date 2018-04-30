@@ -64,6 +64,10 @@ function RegisterComponent(Component) {
 	Component.on("lock", Value => {
 		EventManager.Broadcast(`${ Component.Name }_status`, JSON.stringify(Value));
 	});
+
+	EventManager.on("client", Client => {
+		Client.Send(`${ Component.Name }_status`, JSON.stringify(Component.Locked));
+	});
 };
 
 RegisterComponent(Door);

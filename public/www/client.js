@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		Snackbar.show({ message: Event.data }));
 });
 
-async function RegisterControls(Control) {
+function RegisterControls(Control) {
 	Events.addEventListener(Control + "_status", Event => {
 		UpdateControls(Control, JSON.parse(Event.data));
 	});
@@ -27,12 +27,7 @@ async function RegisterControls(Control) {
 		const Data = { status: document.getElementById(Control + "-toggle").checked };
 		Post(`/api/v1/${Control}/lock`, JSON.stringify(Data));
 	});
-
-	const Json = await Get(`/api/v1/${Control}/lock`);
-	if (Json) {
-		UpdateControls(Control, Json.status);
-	}
-}
+};
 
 function UpdateControls(Control, Value) {
 	if (typeof Value != "boolean") {
