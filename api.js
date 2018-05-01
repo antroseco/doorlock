@@ -4,7 +4,7 @@ const Router = require("koa-router");
 const Hardware = require("./hardware.js")
 
 const Rest = {
-    Controllers: {},
+    Controllers: new Map(),
 
     api: new Router({
         prefix: "/api/v1"
@@ -20,7 +20,7 @@ const Rest = {
 
     Register(Component) {
         if (Component instanceof Hardware.Controller) {
-            this.Controllers[Component.Name] = Component;
+            this.Controllers.set(Component.Name, Component);
         } else {
             throw Error("Invalid arguments");
         }
@@ -52,13 +52,13 @@ Rest.api
     })
     // Verify device exists
     .param("device", async (device, ctx, next) => {
-        ctx.assert(Rest.Controllers[device], 404);
+        ctx.assert(Rest.Controllers.has(device), 404);
 
         await next();
     })
     // Trigger device
     .post("/:device", ctx => {
-        Rest.Controllers[ctx.params.device].Open(ctx.state.id);
+        Rest.Controllers.get(ctx.params.device).Open(ctx.state.id);
 
         ctx.status = 204;
     })
@@ -66,7 +66,7 @@ Rest.api
     .get("/:device/lock", ctx => {
         ctx.type = "application/json";
         ctx.body = JSON.stringify({
-            status: Rest.Controllers[ctx.params.device].Locked
+            status: Rest.Controllers.get(ctx.params.device).Locked
         });
     })
     // Set lock value
@@ -76,7 +76,7 @@ Rest.api
             const Data = JSON.parse(Post);
 
             ctx.assert(typeof Data.status == "boolean", 400);
-            Rest.Controllers[ctx.params.device].Lock(ctx.state.id, Data.status);
+            Rest.Controllers.get(ctx.params.device).Lock(ctx.state.id, Data.status);
 
             ctx.status = 204;
         } catch (error) {
