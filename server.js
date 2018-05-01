@@ -46,8 +46,7 @@ App.use(helmet({
 	}
 }));
 
-const RestApi = require("./api.js");
-const Api = new RestApi();
+const Api = require("./api.js");
 App.use(Api.routes);
 App.use(Api.allowedMethods);
 
