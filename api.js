@@ -11,16 +11,16 @@ const Rest = {
     }),
 
     get routes() {
-        return Rest.api.routes();
+        return this.api.routes();
     },
 
     get allowedMethods() {
-        return Rest.api.allowedMethods();
+        return this.api.allowedMethods();
     },
 
     Register(Component) {
         if (Component instanceof Hardware.Controller) {
-            Rest.Controllers[Component.Name] = Component;
+            this.Controllers[Component.Name] = Component;
         } else {
             throw Error("Invalid arguments");
         }
