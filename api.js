@@ -53,12 +53,13 @@ Rest.api
     // Verify device exists
     .param("device", async (device, ctx, next) => {
         ctx.assert(Rest.Controllers.has(device), 404);
+        ctx.state.device = Rest.Controllers.get(device);
 
         await next();
     })
     // Trigger device
     .post("/:device", ctx => {
-        Rest.Controllers.get(ctx.params.device).Open(ctx.state.id);
+        ctx.state.device.Open(ctx.state.id);
 
         ctx.status = 204;
     })
@@ -66,7 +67,7 @@ Rest.api
     .get("/:device/lock", ctx => {
         ctx.type = "application/json";
         ctx.body = JSON.stringify({
-            status: Rest.Controllers.get(ctx.params.device).Locked
+            status: ctx.state.device.Locked
         });
     })
     // Set lock value
@@ -76,7 +77,7 @@ Rest.api
             const Data = JSON.parse(Post);
 
             ctx.assert(typeof Data.status == "boolean", 400);
-            Rest.Controllers.get(ctx.params.device).Lock(ctx.state.id, Data.status);
+            ctx.state.device.Lock(ctx.state.id, Data.status);
 
             ctx.status = 204;
         } catch (error) {
