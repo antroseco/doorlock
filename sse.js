@@ -36,15 +36,15 @@ class EventManager extends EventEmitter {
     constructor() {
         super();
 
-        this.Clients = [];
+        this.Clients = new Set();
     };
 
     Register() {
         const Client = new EventStream();
-        this.Clients.push(Client);
+        this.Clients.add(Client);
 
         Client.on("close", () => {
-            this.Clients = this.Clients.filter(x => x != Client);
+            this.Clients.delete(Client);
         });
 
         this.emit("client", Client);
