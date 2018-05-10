@@ -30,18 +30,12 @@ const Rest = {
 Rest.api
     // Stateless CSRF protection
     .use(async (ctx, next) => {
-        if (ctx.headers.origin) {
-            var Origin = ctx.headers.origin;
-        } else if (ctx.headers.referer) {
-            const Referer = new URL(ctx.headers.referer);
+        const Re = /doorlock\.party$/i;
 
-            var Origin = Referer.origin;
-        }
+        const Origin = ctx.headers.origin || ctx.headers.referer;
+        const Hostname = new URL(Origin).hostname;
 
-        ctx.assert(Origin == "https://192.168.1.254"
-            || Origin == "https://doorlock.party"
-            || Origin == "https://www.doorlock.party"
-            || Origin == "https://lan.doorlock.party", 403);
+        ctx.assert(Re.test(Hostname) || Hostname == "192.168.1.254", 403);
 
         await next();
     })
