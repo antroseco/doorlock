@@ -39,8 +39,9 @@ Rest.api
         }
 
         ctx.assert(Origin == "https://192.168.1.254"
-            || Origin == "https://raspberrypi.home"
-            || Origin == "https://raspberrypi", 403);
+            || Origin == "https://doorlock.party"
+            || Origin == "https://www.doorlock.party"
+            || Origin == "https://lan.doorlock.party", 403);
 
         await next();
     })
