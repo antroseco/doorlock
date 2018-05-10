@@ -32,7 +32,7 @@ const Rest = {
 Rest.api
     // Stateless CSRF protection
     .use(async (ctx, next) => {
-        const Re = /doorlock\.party$/i;
+        const Re = /^(\w+\.)*doorlock\.party$/i;
 
         const Origin = ctx.headers.origin || ctx.headers.referer;
         const Hostname = new URL(Origin).hostname;
