@@ -1,0 +1,11 @@
+{
+    "credentials": {
+        "key":  "private/doorlock.party.key",
+        "cert": "public/ca/doorlock.party.crt",
+        "ca":   "public/ca/raspberrypi_home.ca.crt"
+    },
+    "server": {
+        "ip": "192.168.1.254",
+        "port": "443"
+    }
+}

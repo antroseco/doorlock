@@ -1,5 +1,7 @@
 "use strict";
 
+const config = require("./config.json");
+
 const path = require("path");
 const fs = require("fs");
 const Koa = require("koa");
@@ -14,9 +16,9 @@ const Gate = new hardware.Controller("gate", 22);
 const GPIO = new hardware.Monitor("gpio input", 26, Name => Door.Open(Name));
 
 const HttpsOptions = {
-	key:  fs.readFileSync(path.join(__dirname, "private",      "doorlock.party.key")),
-	cert: fs.readFileSync(path.join(__dirname, "public", "ca", "doorlock.party.crt")),
-	ca:   fs.readFileSync(path.join(__dirname, "public", "ca", "raspberrypi_home.ca.crt")),
+	key:  fs.readFileSync(path.join(__dirname, config.credentials.key )),
+	cert: fs.readFileSync(path.join(__dirname, config.credentials.cert)),
+	ca:   fs.readFileSync(path.join(__dirname, config.credentials.ca  )),
 	requestCert: true,
 	rejectUnauthorized: true
 };
@@ -75,5 +77,5 @@ App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: f
 App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
 App.use(mount("/ca", serve(path.join(__dirname, "public", "ca"), { maxAge: ms("28d"), immutable: true, gzip: false, brotli: false })));
 
-Server.listen(443, "192.168.1.254", () =>
-	logger.Info("HTTP/2", "listening on port", "443"));
+Server.listen(config.server.port, config.server.ip, () =>
+	logger.Info("HTTP/2", "listening on port", config.server.port));

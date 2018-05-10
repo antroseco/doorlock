@@ -1,5 +1,7 @@
 "use strict";
 
+const config = require("./config.json");
+
 const Router = require("koa-router");
 const Hardware = require("./hardware.js")
 
@@ -35,7 +37,7 @@ Rest.api
         const Origin = ctx.headers.origin || ctx.headers.referer;
         const Hostname = new URL(Origin).hostname;
 
-        ctx.assert(Re.test(Hostname) || Hostname == "192.168.1.254", 403);
+        ctx.assert(Re.test(Hostname) || Hostname == config.server.ip, 403);
 
         await next();
     })
