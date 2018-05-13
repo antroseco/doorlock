@@ -15,16 +15,14 @@ const Door = new hardware.Controller("door", 12);
 const Gate = new hardware.Controller("gate", 22);
 const GPIO = new hardware.Monitor("gpio input", 26, Name => Door.Open(Name));
 
-const HttpsOptions = {
+const App = new Koa();
+const Server = require("http2").createSecureServer({
 	key:  fs.readFileSync(path.join(__dirname, config.credentials.key )),
 	cert: fs.readFileSync(path.join(__dirname, config.credentials.cert)),
 	ca:   fs.readFileSync(path.join(__dirname, config.credentials.ca  )),
 	requestCert: true,
 	rejectUnauthorized: true
-};
-
-const App = new Koa();
-const Server = require("http2").createSecureServer(HttpsOptions, App.callback());
+}, App.callback());
 
 const compress = require("koa-compress");
 App.use(compress());
