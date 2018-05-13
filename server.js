@@ -73,7 +73,6 @@ RegisterComponent(Gate);
 
 App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
 App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
-App.use(mount("/ca", serve(path.join(__dirname, "public", "ca"), { maxAge: ms("28d"), immutable: true, gzip: false, brotli: false })));
 
 Server.listen(config.server.port, config.server.ip, () =>
 	logger.Info("HTTP/2", "listening on port", config.server.port));
