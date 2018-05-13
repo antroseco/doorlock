@@ -1,7 +1,7 @@
 {
     "credentials": {
         "key":  "private/doorlock.party.key",
-        "cert": "public/ca/doorlock.party.crt",
+        "cert": "public/ca/doorlock.party.cer",
         "ca":   "public/ca/raspberrypi_home.ca.crt"
     },
     "server": {

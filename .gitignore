@@ -63,4 +63,5 @@ typings/
 # Certificates
 *.key
 *.crt
+*.cer
 *.pem
