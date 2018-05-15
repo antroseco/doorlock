@@ -7,7 +7,13 @@ const fs = require("fs");
 const Koa = require("koa");
 const serve = require("koa-static");
 const router = require("koa-router");
+const compress = require("koa-compress");
+const helmet = require("koa-helmet");
 const ms = require("ms");
+const http2 = require("http2");
+
+const SSE = require("./sse");
+const Api = require("./api.js");
 const logger = require("./logger.js");
 const hardware = require("./hardware.js");
 
@@ -16,7 +22,7 @@ const Gate = new hardware.Controller("gate", 22);
 const GPIO = new hardware.Monitor("gpio input", 26, Name => Door.Open(Name));
 
 const App = new Koa();
-const Server = require("http2").createSecureServer({
+const Server = http2.createSecureServer({
 	key:  fs.readFileSync(path.join(__dirname, config.credentials.key )),
 	cert: fs.readFileSync(path.join(__dirname, config.credentials.cert)),
 	ca:   fs.readFileSync(path.join(__dirname, config.credentials.ca  )),
@@ -24,10 +30,8 @@ const Server = require("http2").createSecureServer({
 	rejectUnauthorized: true
 }, App.callback());
 
-const compress = require("koa-compress");
 App.use(compress());
 
-const helmet = require("koa-helmet");
 App.use(helmet({
 	frameguard: {
 		action: "deny"
@@ -46,13 +50,7 @@ App.use(helmet({
 }));
 
 const Router = new router();
-
-const Api = require("./api.js");
-Router.use("/api/v1", Api.routes, Api.allowedMethods);
-
-const SSE = require("./sse");
 const EventManager = new SSE();
-Router.get("/sse", EventManager.SSE);
 
 function RegisterComponent(Component) {
 	Api.Register(Component);
@@ -71,6 +69,9 @@ function RegisterComponent(Component) {
 
 RegisterComponent(Door);
 RegisterComponent(Gate);
+
+Router.use("/api/v1", Api.routes, Api.allowedMethods);
+Router.get("/sse", EventManager.SSE);
 
 App.use(Router.routes());
 App.use(Router.allowedMethods());
