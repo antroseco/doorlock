@@ -6,7 +6,7 @@ const path = require("path");
 const fs = require("fs");
 const Koa = require("koa");
 const serve = require("koa-static");
-const mount = require("koa-mount");
+const router = require("koa-router");
 const ms = require("ms");
 const logger = require("./logger.js");
 const hardware = require("./hardware.js");
@@ -45,13 +45,14 @@ App.use(helmet({
 	}
 }));
 
+const Router = new router();
+
 const Api = require("./api.js");
-App.use(Api.routes);
-App.use(Api.allowedMethods);
+Router.use("/api/v1", Api.routes, Api.allowedMethods);
 
 const SSE = require("./sse");
 const EventManager = new SSE();
-App.use(mount("/sse", EventManager.SSE));
+Router.get("/sse", EventManager.SSE);
 
 function RegisterComponent(Component) {
 	Api.Register(Component);
@@ -70,6 +71,9 @@ function RegisterComponent(Component) {
 
 RegisterComponent(Door);
 RegisterComponent(Gate);
+
+App.use(Router.routes());
+App.use(Router.allowedMethods());
 
 App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
 App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));

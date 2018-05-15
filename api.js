@@ -8,9 +8,7 @@ const Hardware = require("./hardware.js")
 const Rest = {
     Controllers: new Map(),
 
-    api: new Router({
-        prefix: "/api/v1"
-    }),
+    api: new Router(),
 
     get routes() {
         return this.api.routes();

@@ -8,7 +8,6 @@
     "koa": "^2.5.0",
     "koa-compress": "^3.0.0",
     "koa-helmet": "^4.0.0",
-    "koa-mount": "^3.0.0",
     "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
     "material-components-web": "^0.29.0",
