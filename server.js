@@ -27,7 +27,8 @@ const Server = http2.createSecureServer({
 	cert: fs.readFileSync(path.join(__dirname, config.credentials.cert)),
 	ca:   fs.readFileSync(path.join(__dirname, config.credentials.ca  )),
 	requestCert: true,
-	rejectUnauthorized: true
+	rejectUnauthorized: true,
+	allowHTTP1: true
 }, App.callback());
 
 App.use(compress());
