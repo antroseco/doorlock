@@ -9,11 +9,11 @@
     "koa-compress": "^3.0.0",
     "koa-helmet": "^4.0.0",
     "koa-router": "^7.4.0",
-    "koa-static": "^4.0.3",
+    "koa-static": "^5.0.0",
     "material-components-web": "^0.29.0",
     "ms": "^2.1.1",
     "rpio": "^0.9.22",
-    "snyk": "^1.82.0"
+    "snyk": "^1.83.0"
   },
   "devDependencies": {},
   "repository": {
