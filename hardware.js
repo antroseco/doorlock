@@ -1,22 +1,28 @@
 "use strict";
 
-const rpio = require("rpio");
+const { Gpio } = require("onoff");
 const logger = require("./logger.js");
 const EventEmitter = require("events");
 
 class Monitor {
 	constructor(Name, Pin, Action) {
 		this.Name = Name;
-		this.Pin = Pin;
 		this.Timeout = false;
 		this.Action = Action;
 
-		rpio.open(this.Pin, rpio.INPUT, rpio.PULL_DOWN);
-		rpio.poll(this.Pin, this.Process.bind(this), rpio.POLL_HIGH);
+		this.gpio = new Gpio(Pin, "in", "rising", { debounceTimeout: 10 });
+		process.on("exit", () => this.gpio.unexport());
+
+		this.gpio.watch(Err => {
+			if (Err) {
+				console.log(Err);
+			} else {
+				this.Process();
+			}
+		});
 	}
 
 	async Process() {
-// POLL_HIGH doesn't do anything, so confirm that this is a rising edge
 		if (!this.Timeout && await this.Debounce()) {
 			this.Timeout = true;
 			setTimeout(() => this.Timeout = false, 4000);
@@ -31,7 +37,7 @@ class Monitor {
 		let Values = [];
 		for (let i = 0; i <= 3 ; ++i) {
 			Values[i] = new Promise(resolve =>
-				setTimeout(() => resolve(rpio.read(this.Pin)), 2 ** (3 * i)));
+				setTimeout(() => resolve(this.gpio.readSync()), 2 ** (3 * i)));
 		}
 
 		return Values.reduce(async (x, y) => await x && await y);
@@ -43,11 +49,11 @@ class Controller extends EventEmitter {
 		super();
 
 		this.Name = Name;
-		this.Pin = Pin;
 		this.Locked = false;
 		this.Timeout = null;
 
-		rpio.open(this.Pin, rpio.OUTPUT, rpio.LOW);
+		this.gpio = new Gpio(Pin, "low");
+		process.on("exit", () => this.gpio.unexport());
 	}
 
 	Open(Id) {
@@ -57,8 +63,8 @@ class Controller extends EventEmitter {
 		}
 
 		clearTimeout(this.Timeout);
-		rpio.write(this.Pin, rpio.HIGH);
-		this.Timeout = setTimeout(() => rpio.write(this.Pin, rpio.LOW), 500);
+		this.gpio.writeSync(Gpio.HIGH);
+		this.Timeout = setTimeout(() => this.gpio.writeSync(Gpio.LOW), 500);
 
 		logger.Log(Id, "requested to open the " + this.Name, "GRANTED");
 		this.emit("open");

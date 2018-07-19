@@ -17,9 +17,9 @@ const Api = require("./api.js");
 const logger = require("./logger.js");
 const hardware = require("./hardware.js");
 
-const Door = new hardware.Controller("door", 12);
-const Gate = new hardware.Controller("gate", 22);
-const GPIO = new hardware.Monitor("gpio input", 26, Name => Door.Open(Name));
+const Door = new hardware.Controller("door", 18);
+const Gate = new hardware.Controller("gate", 25);
+const GPIO = new hardware.Monitor("gpio input", 7, Name => Door.Open(Name));
 
 const App = new Koa();
 const Server = http2.createSecureServer({

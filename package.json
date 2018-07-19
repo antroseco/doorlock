@@ -12,7 +12,7 @@
     "koa-static": "^5.0.0",
     "material-components-web": "^0.29.0",
     "ms": "^2.1.1",
-    "rpio": "^0.9.22",
+    "onoff": "^3.1.0",
     "snyk": "^1.83.0"
   },
   "devDependencies": {},
