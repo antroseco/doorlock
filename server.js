@@ -11,6 +11,7 @@ const compress = require("koa-compress");
 const helmet = require("koa-helmet");
 const ms = require("ms");
 const http2 = require("http2");
+const { constants } = require("crypto");
 
 const SSE = require("./sse");
 const Api = require("./api.js");
@@ -28,7 +29,8 @@ const Server = http2.createSecureServer({
 	ca:   fs.readFileSync(path.join(__dirname, config.credentials.ca  )),
 	requestCert: true,
 	rejectUnauthorized: true,
-	allowHTTP1: true
+	allowHTTP1: true,
+	secureOptions: constants.SSL_OP_NO_TLSv1
 }, App.callback());
 
 App.use(compress());
