@@ -5,7 +5,7 @@
         "ca":   "public/ca/raspberrypi_home.ca.crt"
     },
     "server": {
-        "ip": "192.168.1.254",
+        "ip": "::",
         "port": "443"
     }
 }
