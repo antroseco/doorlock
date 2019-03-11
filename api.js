@@ -27,6 +27,12 @@ const Rest = {
     }
 };
 
+function Act(ctx) {
+    ctx.state.device.Open(ctx.state.id);
+
+    ctx.status = 204;
+}
+
 Rest.api
     // Stateless CSRF protection
     .use(async (ctx, next) => {
@@ -52,12 +58,18 @@ Rest.api
 
         await next();
     })
-    // Trigger device
-    .post("/:device", ctx => {
-        ctx.state.device.Open(ctx.state.id);
+    // Verify tag is allowed
+    .param("tag", async (tag, ctx, next) => {
+        const Tag = config.tags.find(x => x.id === tag);
 
-        ctx.status = 204;
+        ctx.assert(Tag, 403);
+        ctx.state.device = Rest.Controllers.get(Tag.device);
+
+        await next();
     })
+    // Trigger device
+    .post("/tag/:tag", Act)
+    .post("/:device", Act)
     // Query lock status
     .get("/:device/lock", ctx => {
         ctx.type = "application/json";

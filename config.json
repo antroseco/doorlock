@@ -1,11 +1,45 @@
 {
     "credentials": {
-        "key":  "private/doorlock.party.key",
+        "key": "private/doorlock.party.key",
         "cert": "public/ca/fullchain.cer",
-        "ca":   "public/ca/raspberrypi_home.ca.crt"
+        "ca": "public/ca/raspberrypi_home.ca.crt"
     },
     "server": {
         "ip": "::",
         "port": "443"
-    }
+    },
+    "tags": [
+        {
+            "id": "0473b9d2a05980",
+            "device": "door"
+        },
+        {
+            "id": "04c007d2a05984",
+            "device": "door"
+        },
+        {
+            "id": "bef624d9",
+            "device": "door"
+        },
+        {
+            "id": "040ce52aa15981",
+            "device": "door"
+        },
+        {
+            "id": "04bb6aea2f4d80",
+            "device": "door"
+        },
+        {
+            "id": "35314c74",
+            "device": "door"
+        },
+        {
+            "id": "e5304c74",
+            "device": "door"
+        },
+        {
+            "id": "a5d44374",
+            "device": "door"
+        }
+    ]
 }
