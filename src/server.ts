@@ -14,15 +14,17 @@ import { Controller, Monitor } from "./hardware";
 import logger from "./logger";
 import SSE from "./sse";
 
+const ProjectDirectory = path.join(__dirname, "..", "..");
+
 const Door = new Controller("door", 18);
 const Gate = new Controller("gate", 25);
 const GPIO = new Monitor("gpio input", 7, Name => Door.Open(Name));
 
 const App = new Koa();
 const Server = http2.createSecureServer({
-	key: fs.readFileSync(path.join(__dirname, config.credentials.key)),
-	cert: fs.readFileSync(path.join(__dirname, config.credentials.cert)),
-	ca: fs.readFileSync(path.join(__dirname, config.credentials.ca)),
+	key: fs.readFileSync(path.join(ProjectDirectory, config.credentials.key)),
+	cert: fs.readFileSync(path.join(ProjectDirectory, config.credentials.cert)),
+	ca: fs.readFileSync(path.join(ProjectDirectory, config.credentials.ca)),
 	requestCert: true,
 	rejectUnauthorized: true,
 	allowHTTP1: true,
@@ -75,8 +77,8 @@ Router.get("/sse", EventManager.SSE);
 App.use(Router.routes());
 App.use(Router.allowedMethods());
 
-App.use(serve(path.join(__dirname, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
-App.use(serve(path.join(__dirname, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
+App.use(serve(path.join(ProjectDirectory, "public", "www"), { maxAge: ms("7d"), gzip: false, brotli: false }));
+App.use(serve(path.join(ProjectDirectory, "node_modules", "material-components-web", "dist"), { maxAge: ms("7d"), immutable: true, gzip: false, brotli: false }));
 
 Server.listen(config.server.port, config.server.ip, () =>
 	logger.Info("HTTP/2", "listening on port", config.server.port.toString()));
