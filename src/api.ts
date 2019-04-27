@@ -59,10 +59,8 @@ Rest.api
     .param("tag", async (tag, ctx, next) => {
         const Tag = config.tags.find(x => x.id === tag);
 
-        if (Tag)
-            ctx.state.device = Rest.Controllers.get(Tag.device);
-        else
-            ctx.throw(403);
+        ctx.assert(Tag, 403);
+        ctx.state.device = Rest.Controllers.get(Tag!.device);
 
         await next();
     })
