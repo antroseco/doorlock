@@ -1,6 +1,12 @@
-const { Transform } = require("stream");
-const ms = require("ms");
-const EventEmitter = require("events");
+import { EventEmitter } from "events";
+import { Context } from "koa";
+import ms from "ms";
+import { Transform } from "stream";
+
+type Packet = {
+    Event: string,
+    Data: string | string[]
+};
 
 class EventStream extends Transform {
     constructor() {
@@ -10,12 +16,12 @@ class EventStream extends Transform {
         });
     };
 
-    _transform(Message, Encoding, Callback) {
-        let Result = `event: ${ Message.Event }\n`;
+    _transform(Message: Packet, _Encoding: never, Callback: () => undefined) {
+        let Result = `event: ${Message.Event}\n`;
 
-        const Data = Message.Data instanceof Array ? Message.Data : [ Message.Data ];
+        const Data = [Message.Data].flat();
         for (const Chunk of Data) {
-            Result += `data: ${ Chunk }\n`;
+            Result += `data: ${Chunk}\n`;
         }
 
         Result += "\n";
@@ -24,19 +30,16 @@ class EventStream extends Transform {
         Callback();
     };
 
-    Send(event, data) {
-        this.write({
-            Event: event,
-            Data: data
-        });
+    Send(Event: string, Data: string) {
+        this.write({ Event, Data });
     };
 };
 
-class EventManager extends EventEmitter {
+export default class EventManager extends EventEmitter {
+    private Clients = new Set();
+
     constructor() {
         super();
-
-        this.Clients = new Set();
     };
 
     Register() {
@@ -50,9 +53,9 @@ class EventManager extends EventEmitter {
         this.emit("client", Client);
 
         return Client;
-    }
+    };
 
-    Middleware(ctx) {
+    Middleware(ctx: Context) {
         ctx.assert(ctx.accepts("text/event-stream"), 403);
 
         ctx.type = "text/event-stream; charset=utf-8";
@@ -60,13 +63,13 @@ class EventManager extends EventEmitter {
         ctx.set("Cache-Control", "no-cache");
         ctx.flushHeaders();
 
-        ctx.req.setTimeout(ms("10m"));
+        ctx.req.setTimeout(ms("10m"), () => ctx.req.destroy());
         ctx.req.socket.setNoDelay(true);
 
         ctx.body = this.Register();
     };
 
-    Broadcast(Event, Data) {
+    Broadcast(Event: string, Data: string) {
         for (const Client of this.Clients) {
             Client.Send(Event, Data);
         }
@@ -76,5 +79,3 @@ class EventManager extends EventEmitter {
         return this.Middleware.bind(this);
     }
 };
-
-module.exports = EventManager;

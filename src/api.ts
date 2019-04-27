@@ -1,11 +1,12 @@
-"use strict";
+import { Context } from "koa";
+import Router from "koa-router";
+import { TLSSocket } from "tls";
+import { URL } from "url";
+import config from "../config.json";
+import { Controller } from "./hardware";
 
-const config = require("./config.json");
 
-const Router = require("koa-router");
-const Hardware = require("./hardware.js")
-
-const Rest = {
+export const Rest = {
     Controllers: new Map(),
 
     api: new Router(),
@@ -18,16 +19,12 @@ const Rest = {
         return this.api.allowedMethods();
     },
 
-    Register(Component) {
-        if (Component instanceof Hardware.Controller) {
-            this.Controllers.set(Component.Name, Component);
-        } else {
-            throw Error("Invalid arguments");
-        }
+    Register(Component: Controller) {
+        this.Controllers.set(Component.Name, Component);
     }
 };
 
-function Act(ctx) {
+function Act(ctx: Context) {
     ctx.state.device.Open(ctx.state.id);
 
     ctx.status = 204;
@@ -47,7 +44,7 @@ Rest.api
     })
     // Save client ID
     .use(async (ctx, next) => {
-        ctx.state.id = ctx.socket.getPeerCertificate().subject.CN;
+        ctx.state.id = (ctx.socket as TLSSocket).getPeerCertificate().subject.CN;
 
         await next();
     })
@@ -62,8 +59,10 @@ Rest.api
     .param("tag", async (tag, ctx, next) => {
         const Tag = config.tags.find(x => x.id === tag);
 
-        ctx.assert(Tag, 403);
-        ctx.state.device = Rest.Controllers.get(Tag.device);
+        if (Tag)
+            ctx.state.device = Rest.Controllers.get(Tag.device);
+        else
+            ctx.throw(403);
 
         await next();
     })
@@ -94,7 +93,7 @@ Rest.api
         }
     });
 
-function GetPost(ctx) {
+function GetPost(ctx: Context): Promise<string> {
     let Buffer = "";
 
     return new Promise((resolve, reject) => {
@@ -114,4 +113,4 @@ function GetPost(ctx) {
     });
 };
 
-module.exports = Rest;
+export default Rest;

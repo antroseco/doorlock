@@ -65,3 +65,6 @@ typings/
 *.crt
 *.cer
 *.pem
+
+# TypeScript output directory
+dist/
