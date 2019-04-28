@@ -5,7 +5,6 @@ import { URL } from "url";
 import config from "../config.json";
 import { Controller } from "./hardware";
 
-
 export const Rest = {
     Controllers: new Map(),
 
