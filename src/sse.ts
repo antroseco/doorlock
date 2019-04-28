@@ -16,7 +16,7 @@ class EventStream extends Transform {
         });
     };
 
-    _transform(Message: Packet, _Encoding: never, Callback: () => void) {
+    _transform(Message: Packet, _Encoding: string, Callback: () => void) {
         let Result = `event: ${Message.Event}\n`;
 
         const Data = [Message.Data].flat();
