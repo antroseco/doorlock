@@ -1,43 +1,81 @@
 "use strict";
 
 const Events = new EventSource("/sse");
-let Snackbar = undefined;
+let Snackbar;
+
+class SnackbarWrapper {
+	constructor(Query) {
+		this.active = false;
+		this.queue = [];
+
+		this.native = document.querySelector(Query);
+		this.native.addEventListener("MDCSnackbar:closed", () => {
+			if (this.queue.length)
+				this.pop();
+			else
+				this.active = false;
+		});
+
+		this.handle = new mdc.snackbar.MDCSnackbar(this.native);
+		this.handle.timeoutMs = 4000;
+	}
+
+	Notify(Message) {
+		this.queue.push(Message);
+
+		if (!this.active)
+			this.pop();
+	}
+
+	pop() {
+		this.active = true;
+		this.handle.labelText = this.queue.shift();
+		this.handle.open();
+	}
+}
 
 document.addEventListener("DOMContentLoaded", () => {
-	mdc.autoInit();
-	Snackbar = mdc.snackbar.MDCSnackbar.attachTo(document.getElementById("snackbar"));
+	Snackbar = new SnackbarWrapper(".mdc-snackbar");
+	mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector(".mdc-top-app-bar"));
 
 	RegisterControls("door");
 	RegisterControls("gate");
 
-	Events.addEventListener("message", Event =>
-		Snackbar.show({ message: Event.data }));
+	Events.addEventListener("message", e => Snackbar.Notify(e.data));
 });
 
 function RegisterControls(Control) {
-	Events.addEventListener(Control + "_status", Event => {
+	const Root = document.getElementById(Control);
+	const Button = Root.querySelector("button");
+	const Native = Root.querySelector("input");
+	const Switch = new mdc.switchControl.MDCSwitch(Root.querySelector(".mdc-switch"));
+
+	mdc.ripple.MDCRipple.attachTo(Button);
+
+	Switch.disabled = false;
+
+	Events.addEventListener(`${Control}_status`, e => {
 		try {
-			UpdateControls(Control, JSON.parse(Event.data));
-		} catch(error) {
-			Snackbar.show({ message: error });
+			UpdateControls({ Button, Switch }, JSON.parse(e.data));
+		} catch (error) {
+			Snackbar.Notify(error);
 		}
 	});
 
-	document.getElementById(Control + "-button").addEventListener("click", () => {
-		Post(`/api/v1/${Control}`);
-	});
+	Button.addEventListener("click", () =>
+		Post(`/api/v1/${Control}`));
 
-	document.getElementById(Control + "-toggle").addEventListener("click", () => {
-		const Data = { status: document.getElementById(Control + "-toggle").checked };
+	Native.addEventListener("change", () => {
+		const Data = { status: Native.checked };
 		Post(`/api/v1/${Control}/lock`, JSON.stringify(Data));
 	});
-};
+}
 
-function UpdateControls(Control, Value) {
-	document.getElementById(Control + "-toggle").checked  = Value;
-	document.getElementById(Control + "-toggle").disabled = false;
-	document.getElementById(Control + "-button").disabled = Value;
-};
+function UpdateControls(Controls, Value) {
+	Controls.Switch.checked = Value;
+	Controls.Switch.disabled = false;
+	Controls.Button.disabled = Value;
+}
 
 async function Fetch(Method, Url, Data) {
 	try {
@@ -54,12 +92,12 @@ async function Fetch(Method, Url, Data) {
 		}
 
 		// Nothing to parse if 204 NO CONTENT
-		return Response.status == 204 ? undefined : await Response.json();
-	} catch(error) {
-		Snackbar.show({ message: error });
+		return Response.status === 204 ? undefined : Response.json();
+	} catch (error) {
+		Snackbar.Notify(error);
 		return undefined;
 	}
-};
+}
 
-const Get  = Fetch.bind(this, "GET" );
+const Get = Fetch.bind(this, "GET");
 const Post = Fetch.bind(this, "POST");

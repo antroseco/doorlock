@@ -1,7 +1,11 @@
-section.mdc-card__actions {
-	justify-content: space-between;
+body {
+  margin: 0;
 }
 
-div.mdc-switch.mdc-card__action {
-	align-self: center;
+.mdc-layout-grid__inner {
+  padding-top: 16px;
+}
+
+h2 {
+  margin: 1rem;
 }

@@ -1,91 +1,98 @@
 <!DOCTYPE html>
-<html lang="en" class="mdc-typography">
-	<head>
-		<title>IoT Doorlock</title>
+<html lang="en">
 
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+	<title>IoT Doorlock</title>
 
-		<link rel="stylesheet" href="/material-components-web.min.css" />
-		<link rel="stylesheet" href="/style.css" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<script defer src="/material-components-web.min.js"></script>
-		<script defer src="/client.js"></script>
+	<link rel="stylesheet" href="/material-components-web.min.css" />
+	<link rel="stylesheet" href="/style.css" />
 
-		<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=7kbWjGl8xl" />
-		<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png?v=7kbWjGl8xl" />
-		<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png?v=7kbWjGl8xl" />
-		<link rel="manifest" href="/manifest.json?v=7kbWjGl8xl" />
-		<link rel="mask-icon" href="/icons/safari-pinned-tab.svg?v=7kbWjGl8xl" color="#6200ee" />
-		<link rel="shortcut icon" href="/icons/favicon.ico?v=7kbWjGl8xl" />
-		<meta name="msapplication-config" content="/browserconfig.xml?v=7kbWjGl8xl" />
-		<meta name="theme-color" content="#6200ee" />
-	</head>
-	<body>
+	<script defer src="/material-components-web.min.js"></script>
+	<script defer src="/client.js"></script>
 
-		<header class="mdc-toolbar mdc-toolbar--fixed">
-			<div class="mdc-toolbar__row">
-				<section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-					<span class="mdc-toolbar__title">Doorlock</span>
-				</section>
-			</div>
-		</header>
+	<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=7kbWjGl8xl" />
+	<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png?v=7kbWjGl8xl" />
+	<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png?v=7kbWjGl8xl" />
+	<link rel="manifest" href="/manifest.json?v=7kbWjGl8xl" />
+	<link rel="mask-icon" href="/icons/safari-pinned-tab.svg?v=7kbWjGl8xl" color="#6200ee" />
+	<link rel="shortcut icon" href="/icons/favicon.ico?v=7kbWjGl8xl" />
+	<meta name="msapplication-config" content="/browserconfig.xml?v=7kbWjGl8xl" />
+	<meta name="theme-color" content="#6200ee" />
+</head>
 
-		<main class="mdc-toolbar-fixed-adjust">
-			<div class="mdc-layout-grid">
-			<div class="mdc-layout-grid__inner">
-				<div class="mdc-layout-grid__cell">
-					<div class="mdc-card">
+<body class="mdc-typography">
 
-						<section class="mdc-card__primary">
-							<h1 class="mdc-card__title mdc-card__title--large">Door control</h1>
-						</section>
+	<header class="mdc-top-app-bar mdc-top-app-bar--fixed">
+		<div class="mdc-top-app-bar__row">
+			<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+				<span class="mdc-top-app-bar__title">Doorlock</span>
+			</section>
+		</div>
+	</header>
 
-						<section class="mdc-card__actions">
-							<button id="door-button" class="mdc-button mdc-button--compact mdc-button--accent mdc-card__action" data-mdc-auto-init="MDCRipple">Open</button>
+	<main class="mdc-layout-grid mdc-top-app-bar--fixed-adjust">
+		<div class="mdc-layout-grid__inner">
 
-							<div class="mdc-switch mdc-card__action">
-								<input type="checkbox" id="door-toggle" class="mdc-switch__native-control" aria-label="Toggle door lock" disabled />
-								<div class="mdc-switch__background">
-									<div class="mdc-switch__knob"></div>
+			<div id="door" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+				<div class="mdc-card">
+					<h2 class="mdc-typography mdc-typography--headline5">Door</h2>
+					<div class="mdc-card__actions">
+						<div class="mdc-card__action-buttons">
+							<button class="mdc-button mdc-card__action mdc-card__action--button">Open</button>
+						</div>
+						<div class="mdc-card__action-icons">
+							<div class="mdc-card__action mdc-card__action--icon">
+								<div class="mdc-switch mdc-switch--disabled">
+									<div class="mdc-switch__track"></div>
+									<div class="mdc-switch__thumb-underlay">
+										<div class="mdc-switch__thumb">
+											<input type="checkbox" class="mdc-switch__native-control" role="switch"
+												disabled>
+										</div>
+									</div>
 								</div>
 							</div>
-
-						</section>
-
+						</div>
 					</div>
 				</div>
+			</div>
 
-				<div class="mdc-layout-grid__cell">
-					<div class="mdc-card">
-
-						<section class="mdc-card__primary">
-							<h1 class="mdc-card__title mdc-card__title--large">Gate control</h1>
-						</section>
-
-						<section class="mdc-card__actions">
-							<button id="gate-button" class="mdc-button mdc-button--compact mdc-button--accent mdc-card__action" data-mdc-auto-init="MDCRipple">Open</button>
-
-							<div class="mdc-switch mdc-card__action">
-                                                                <input type="checkbox" id="gate-toggle" class="mdc-switch__native-control" aria-label="Toggle gate lock" disabled />
-                                                                <div class="mdc-switch__background">
-                                                                        <div class="mdc-switch__knob"></div>
-                                                                </div>
+			<div id="gate" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+				<div class="mdc-card">
+					<h2 class="mdc-typography mdc-typography--headline5">Gate</h2>
+					<div class="mdc-card__actions">
+						<div class="mdc-card__action-buttons">
+							<button class="mdc-button mdc-card__action mdc-card__action--button">Open</button>
+						</div>
+						<div class="mdc-card__action-icons">
+							<div class="mdc-card__action mdc-card__action--icon">
+								<div class="mdc-switch mdc-switch--disabled">
+									<div class="mdc-switch__track"></div>
+									<div class="mdc-switch__thumb-underlay">
+										<div class="mdc-switch__thumb">
+											<input type="checkbox" class="mdc-switch__native-control" role="switch"
+												disabled>
+										</div>
+									</div>
+								</div>
 							</div>
-
-						</section>
-
+						</div>
 					</div>
 				</div>
 			</div>
-			</div>
-		</main>
 
-		<div id="snackbar" class="mdc-snackbar">
-			<div class="mdc-snackbar__text"></div>
-			<div class="mdc-snackbar__action-wrapper">
-				<button type="button" class="mdc-button mdc-snackbar__action-button"></button>
-			</div>
 		</div>
-	</body>
+	</main>
+
+	<div class="mdc-snackbar">
+		<div class="mdc-snackbar__surface">
+			<div class="mdc-snackbar__label" role="status" aria-live="polite"></div>
+		</div>
+	</div>
+
+</body>
+
 </html>
