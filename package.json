@@ -35,6 +35,5 @@
     "node": ">=10.0.0"
   },
   "author": "Andreas Economides",
-  "license": "GPL-3.0",
-  "snyk": true
+  "license": "GPL-3.0"
 }
