@@ -1,8 +1,13 @@
 import { EventEmitter } from "events";
-import { Gpio } from "onoff";
+import { Gpio, BinaryValue } from "onoff";
 import { Info, Log } from "./logger.js";
 
 const enum State { LOW, HIGH };
+
+function Sleep(ms: number): Promise<void> {
+	return new Promise(resolve =>
+		setTimeout(resolve, ms));
+}
 
 export class Monitor {
 	private Timeout = false;
@@ -10,36 +15,38 @@ export class Monitor {
 
 	constructor(readonly Name: string, Pin: number, private Action: (name: string) => any) {
 		this.gpio = new Gpio(Pin, "in", "rising", { debounceTimeout: 10 });
-		process.on("exit", () => this.gpio.unexport());
+		process.on("exit", this.gpio.unexport.bind(this));
 
-		this.gpio.watch(Err => {
-			if (Err) {
-				console.log(Err);
-			} else {
-				this.Process();
-			}
-		});
+		this.gpio.watch(this.Process.bind(this));
 	}
 
-	async Process() {
+	async Process(Err: Error | null | undefined) {
+		if (Err) {
+			console.log(Err);
+			return;
+		}
+
 		if (!this.Timeout && await this.Debounce()) {
 			this.Timeout = true;
-			setTimeout(() => this.Timeout = false, 4000);
-
 			this.Action(this.Name);
+
+			await Sleep(4000);
+			this.Timeout = false;
 		} else {
 			Info(this.Name, "signal was", "debounced");
 		}
 	}
 
 	async Debounce() {
-		let Values = [];
+		let Values: Promise<BinaryValue>[] = [];
 		for (let i = 0; i <= 3; ++i) {
-			Values[i] = new Promise(resolve =>
-				setTimeout(() => resolve(this.gpio.readSync()), 2 ** (3 * i)));
+			Values[i] = new Promise(async resolve => {
+				await Sleep(2 ** (3 * i));
+				resolve(this.gpio.read());
+			});
 		}
 
-		return Values.reduce(async (x, y) => await x && await y);
+		return await Values.reduce(async (x, y) => await x && await y) !== State.LOW;
 	}
 }
 
@@ -55,20 +62,20 @@ export class Controller extends EventEmitter {
 		process.on("exit", () => this.gpio.unexport());
 	}
 
-	Open(Id: string) {
+	async Open(Id: string) {
 		if (this.Locked) {
 			Log(Id, "requested to open the " + this.Name, "REJECTED");
-			return false;
+			return;
 		}
 
 		clearTimeout(this.Timeout!);
-		this.gpio.writeSync(State.HIGH);
-		this.Timeout = setTimeout(() => this.gpio.writeSync(State.LOW), 500);
+		await this.gpio.write(State.HIGH);
 
 		Log(Id, "requested to open the " + this.Name, "GRANTED");
 		this.emit("open");
 
-		return true;
+		await Sleep(500);
+		await this.gpio.write(State.LOW);
 	}
 
 	Lock(Id: string, Value: any) {
