@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Gpio, BinaryValue } from "onoff";
-import { Info, Log } from "./logger.js";
+import { Info, Log } from "./logger";
 
 const enum State { LOW, HIGH };
 
