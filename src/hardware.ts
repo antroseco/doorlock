@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Gpio, BinaryValue } from "onoff";
-import { Info, Log } from "./logger";
+import logger from "./logger";
 
 const enum State { LOW, HIGH };
 
@@ -22,7 +22,7 @@ export class Monitor {
 
 	async Process(Err: Error | null | undefined) {
 		if (Err) {
-			console.log(Err);
+			logger.Error(Err);
 			return;
 		}
 
@@ -33,7 +33,7 @@ export class Monitor {
 			await Sleep(4000);
 			this.Timeout = false;
 		} else {
-			Info(this.Name, "signal was", "debounced");
+			logger.Info(this.Name, "signal was", "debounced");
 		}
 	}
 
@@ -64,14 +64,14 @@ export class Controller extends EventEmitter {
 
 	async Open(Id: string) {
 		if (this.Locked) {
-			Log(Id, "requested to open the " + this.Name, "REJECTED");
+			logger.Log(Id, "requested to open the " + this.Name, "REJECTED");
 			return;
 		}
 
 		clearTimeout(this.Timeout!);
 		await this.gpio.write(State.HIGH);
 
-		Log(Id, "requested to open the " + this.Name, "GRANTED");
+		logger.Log(Id, "requested to open the " + this.Name, "GRANTED");
 		this.emit("open");
 
 		await Sleep(500);
@@ -80,13 +80,13 @@ export class Controller extends EventEmitter {
 
 	Lock(Id: string, Value: any) {
 		if (typeof Value !== "boolean" || Value === this.Locked) {
-			Log(Id, "received corrupt response", typeof Value);
+			logger.Log(Id, "received corrupt response", typeof Value);
 			return false;
 		}
 
 		this.Locked = Value;
 
-		Log(Id, "updated the " + this.Name + " lock status", Value.toString());
+		logger.Log(Id, "updated the " + this.Name + " lock status", Value.toString());
 		this.emit("lock", Value);
 
 		return true;

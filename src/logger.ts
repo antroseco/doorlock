@@ -16,4 +16,8 @@ export function Warn(User: string, Message: string, Details: string) {
 	console.warn(Timestamp(), User.yellow.bold, Message.yellow, Details.yellow.bold);
 };
 
-export default { Log, Info, Warn };
+export function Error(Err: Error) {
+	console.error(Timestamp(), Err.message.red.bold);
+};
+
+export default { Log, Info, Warn, Error };
