@@ -37,16 +37,19 @@ export class Monitor {
 		}
 	}
 
-	async Debounce() {
-		let Values: Promise<BinaryValue>[] = [];
-		for (let i = 0; i <= 3; ++i) {
-			Values[i] = new Promise(async resolve => {
-				await Sleep(2 ** (3 * i));
-				resolve(this.gpio.read());
-			});
-		}
+	private async DelayedRead(Exponent: number) {
+		await Sleep(2 ** (3 * Exponent));
+		return this.gpio.read();
+	}
 
-		return await Values.reduce(async (x, y) => await x && await y) !== State.LOW;
+	private async Debounce() {
+		const Promises: Promise<BinaryValue>[] = [];
+
+		for (let i = 0; i < 4; ++i)
+			Promises.push(this.DelayedRead(i));
+
+		const Values = await Promise.all(Promises);
+		return !Values.some(Value => Value === State.LOW);
 	}
 }
 
