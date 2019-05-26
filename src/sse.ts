@@ -5,7 +5,7 @@ import { Transform } from "stream";
 
 type Packet = {
     Event: string,
-    Data: string | string[]
+    Data: string | ReadonlyArray<string>
 };
 
 class EventStream extends Transform {
