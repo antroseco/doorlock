@@ -13,7 +13,7 @@ export class Monitor {
 	private Timeout = false;
 	private readonly gpio: Gpio;
 
-	constructor(readonly Name: string, Pin: number, private Action: (name: string) => any) {
+	constructor(readonly Name: string, Pin: number, private Action: (name: string) => void) {
 		this.gpio = new Gpio(Pin, "in", "rising", { debounceTimeout: 10 });
 		process.on("exit", this.gpio.unexport.bind(this));
 
@@ -81,7 +81,7 @@ export class Controller extends EventEmitter {
 		await this.gpio.write(State.LOW);
 	}
 
-	Lock(Id: string, Value: any) {
+	Lock(Id: string, Value: unknown) {
 		if (typeof Value !== "boolean" || Value === this.Locked) {
 			logger.Log(Id, "received corrupt response", typeof Value);
 			return false;
