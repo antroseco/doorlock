@@ -1,31 +1,46 @@
-import { EventEmitter } from "events";
-import { Gpio, BinaryValue } from "onoff";
+import { Gpio, pigpio, Pull, BinaryValue } from "pigpio-client";
 import logger from "./logger";
-
-const enum State { LOW, HIGH };
+import { promisify } from "util";
+import { EventEmitter } from "events";
 
 function Sleep(ms: number): Promise<void> {
 	return new Promise(resolve =>
 		setTimeout(resolve, ms));
 }
 
-export class Monitor {
-	private Timeout = false;
-	private readonly gpio: Gpio;
+class GpioHandle {
+	public static Client = pigpio({ host: "localhost" });
+	protected gpio: Gpio;
 
-	constructor(readonly Name: string, Pin: number, private Action: (name: string) => any) {
-		this.gpio = new Gpio(Pin, "in", "rising", { debounceTimeout: 10 });
-		process.on("exit", this.gpio.unexport.bind(this));
-
-		this.gpio.watch(this.Process.bind(this));
+	constructor(Pin: number) {
+		this.gpio = GpioHandle.Client.gpio(Pin);
+		this.read = promisify(this.gpio.read);
+		this.write = promisify(this.gpio.write);
+		this.on = this.gpio.on;
+		this.emit = this.gpio.emit;
 	}
 
-	async Process(Err: Error | null | undefined) {
-		if (Err) {
-			logger.Error(Err);
-			return;
-		}
+	protected read: () => Promise<BinaryValue>;
+	protected write: (Value: BinaryValue) => Promise<undefined>;
 
+	public on: EventEmitter["on"];
+	protected emit: EventEmitter["emit"];
+}
+
+export class Monitor extends GpioHandle {
+	private Timeout = false;
+
+	constructor(readonly Name: string, Pin: number, private Action: (name: string) => any) {
+		super(Pin);
+
+		this.gpio.modeSet("input");
+		this.gpio.pullUpDown(Pull.DOWN);
+		this.gpio.glitchSet(300); // TODO
+
+		this.gpio.notify(this.Process.bind(this));
+	}
+
+	async Process(Value: BinaryValue) {
 		if (!this.Timeout && await this.Debounce()) {
 			this.Timeout = true;
 			this.Action(this.Name);
@@ -39,7 +54,7 @@ export class Monitor {
 
 	private async DelayedRead(Exponent: number) {
 		await Sleep(2 ** (3 * Exponent));
-		return this.gpio.read();
+		return this.read();
 	}
 
 	private async Debounce() {
@@ -49,20 +64,19 @@ export class Monitor {
 			Promises.push(this.DelayedRead(i));
 
 		const Values = await Promise.all(Promises);
-		return !Values.some(Value => Value === State.LOW);
+		return !Values.some(Value => Value === BinaryValue.LOW);
 	}
 }
 
-export class Controller extends EventEmitter {
+export class Controller extends GpioHandle {
 	public Locked = false;
 	private Timeout?: NodeJS.Timeout;
-	private readonly gpio: Gpio;
 
 	constructor(readonly Name: string, Pin: number) {
-		super();
+		super(Pin);
 
-		this.gpio = new Gpio(Pin, "low");
-		process.on("exit", () => this.gpio.unexport());
+		this.gpio.modeSet("output");
+		this.gpio.write(BinaryValue.LOW);
 	}
 
 	async Open(Id: string) {
@@ -72,13 +86,13 @@ export class Controller extends EventEmitter {
 		}
 
 		clearTimeout(this.Timeout!);
-		await this.gpio.write(State.HIGH);
+		await this.write(BinaryValue.HIGH);
 
 		logger.Log(Id, "requested to open the " + this.Name, "GRANTED");
 		this.emit("open");
 
 		await Sleep(500);
-		await this.gpio.write(State.LOW);
+		await this.write(BinaryValue.LOW);
 	}
 
 	Lock(Id: string, Value: any) {
@@ -96,4 +110,16 @@ export class Controller extends EventEmitter {
 	}
 }
 
-export default { Monitor, Controller };
+GpioHandle.Client.on('disconnected', (Reason: string) => {
+	logger.Warn('pigpiod', 'disconnected, reason:', Reason);
+	logger.Info('pigpiod', 'attempting to reconnect in', '1 second');
+
+	setTimeout(GpioHandle.Client.connect, 1000);
+});
+
+export default {
+	Monitor,
+	Controller,
+	on: GpioHandle.Client.on.bind(GpioHandle.Client),
+	once: GpioHandle.Client.once.bind(GpioHandle.Client)
+};
