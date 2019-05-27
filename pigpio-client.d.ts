@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 
 declare module 'pigpio-client' {
-    enum BinaryValue { LOW = 0, HIGH = 1 }
+    const enum BinaryValue { LOW = 0, HIGH = 1 }
 
-    export enum Pull { CLEAR = 0, DOWN = 1, HIGH = 2 }
+    const enum Pull { CLEAR = 0, DOWN = 1, HIGH = 2 }
 
     type ClientOptions = {
         host?: string,
