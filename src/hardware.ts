@@ -185,7 +185,7 @@ export class WiegandRfid extends EventEmitter {
 
 			if (EvenCount % 2 === 0 && OddCount % 2 === 1) {
 				const Data = this.Bits.slice(1, 25).join("");
-				const Hex = parseInt(Data, 2).toString(16);
+				const Hex = parseInt(Data, 2).toString(16).padStart(6, "0");
 
 				this.emit("card", Hex);
 			} else {
