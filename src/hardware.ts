@@ -136,9 +136,73 @@ export class Controller extends EventEmitter {
 	}
 }
 
+export class WiegandRfid extends EventEmitter {
+	private d0: GpioHandle;
+	private d1: GpioHandle;
+
+	private Bits: number[] = [];
+	private Timeout?: NodeJS.Timeout;
+
+	constructor(d0Pin: number, d1Pin: number) {
+		super();
+
+		const Options = {
+			Mode: "input" as GpioMode,
+			Pull: Pull.DOWN,
+			Debounce: 300
+		};
+
+		this.d0 = new GpioHandle({
+			Pin: d0Pin,
+			...Options
+		});
+
+		this.d1 = new GpioHandle({
+			Pin: d1Pin,
+			...Options
+		});
+
+		this.d0.notify(this.Pulse.bind(this, 0));
+		this.d1.notify(this.Pulse.bind(this, 1));
+	}
+
+	private Pulse(Value: number, State: BinaryValue) {
+		if (State === BinaryValue.LOW) {
+			this.Bits.push(Value);
+			clearTimeout(this.Timeout!);
+			this.Timeout = setTimeout(this.Done.bind(this), 16);
+		}
+	}
+
+	private Done() {
+		if (this.Bits.length === 26) {
+			// Check parity
+			const Even = this.Bits.slice(0, 13);
+			const Odd = this.Bits.slice(13, 26);
+
+			const EvenCount = Even.filter(x => x === 1).length;
+			const OddCount = Odd.filter(x => x === 1).length;
+
+			if (EvenCount % 2 === 0 && OddCount % 2 === 1) {
+				const Data = this.Bits.slice(1, 25).join("");
+				const Hex = parseInt(Data, 2).toString(16);
+
+				this.emit("card", Hex);
+			} else {
+				logger.Warn("Wiegand", "parity check failed", this.Bits.join(""));
+			}
+		} else {
+			logger.Warn("Wiegand", "discarding", this.Bits.join(""));
+		}
+
+		this.Bits = [];
+	}
+}
+
 export default {
 	Monitor,
 	Controller,
+	WiegandRfid,
 	on: Client.on.bind(Client),
 	once: Client.once.bind(Client)
 };

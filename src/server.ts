@@ -10,13 +10,13 @@ import ms from "ms";
 import path from "path";
 import config from "../config.json";
 import Api from "./api";
-import hardware, { Controller, Monitor } from "./hardware";
+import hardware, { Controller, Monitor, WiegandRfid } from "./hardware";
 import logger from "./logger";
 import SSE from "./sse";
 
 const ProjectDirectory = path.join(__dirname, "..", "..");
 
-let Door: Controller, Gate: Controller, GPIO: Monitor;
+let Door: Controller, Gate: Controller, GPIO: Monitor, Rfid: WiegandRfid;
 
 const App = new Koa();
 const Server = http2.createSecureServer({
@@ -84,6 +84,15 @@ hardware.once('connected', Info => {
 	Door = new Controller("door", 18);
 	Gate = new Controller("gate", 25);
 	GPIO = new Monitor("gpio input", 7, Name => Door.Open(Name));
+	Rfid = new WiegandRfid(5, 6);
+
+	Rfid.on("card", (Id: string) => {
+		// TODO: More consistent logging
+		if (config.tags.includes(Id))
+			Door.Open(Id);
+		else
+			logger.Log(Id, "requested to open the " + Door.Name, "UNAUTHORISED");
+	});
 
 	RegisterComponent(Door);
 	RegisterComponent(Gate);
