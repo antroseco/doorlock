@@ -10,15 +10,13 @@ import ms from "ms";
 import path from "path";
 import config from "../config.json";
 import Api from "./api";
-import { Controller, Monitor } from "./hardware";
+import hardware, { Controller, Monitor, WiegandRfid } from "./hardware";
 import logger from "./logger";
 import SSE from "./sse";
 
 const ProjectDirectory = path.join(__dirname, "..", "..");
 
-const Door = new Controller("door", 18);
-const Gate = new Controller("gate", 25);
-const GPIO = new Monitor("gpio input", 7, Name => Door.Open(Name));
+let Door: Controller, Gate: Controller, GPIO: Monitor, Rfid: WiegandRfid;
 
 const App = new Koa();
 const Server = http2.createSecureServer({
@@ -68,9 +66,6 @@ function RegisterComponent(Component: Controller) {
 	});
 };
 
-RegisterComponent(Door);
-RegisterComponent(Gate);
-
 Router.use("/api/v1", Api.routes, Api.allowedMethods);
 Router.get("/sse", EventManager.SSE);
 
@@ -82,3 +77,25 @@ App.use(serve(path.join(ProjectDirectory, "node_modules", "material-components-w
 
 Server.listen(config.server.port, config.server.ip, () =>
 	logger.Info("HTTP/2", "listening on port", config.server.port.toString()));
+
+hardware.once('connected', Info => {
+	console.log(JSON.stringify(Info, null, 2));
+
+	Door = new Controller("door", 18);
+	Gate = new Controller("gate", 25);
+	GPIO = new Monitor("gpio input", 7, Name => Door.Open(Name));
+	Rfid = new WiegandRfid(5, 6);
+
+	Rfid.on("card", (Id: string) => {
+		// TODO: More consistent logging
+		if (config.tags.includes(Id))
+			Door.Open(Id);
+		else
+			logger.Log(Id, "requested to open the " + Door.Name, "UNAUTHORISED");
+	});
+
+	RegisterComponent(Door);
+	RegisterComponent(Gate);
+});
+
+hardware.on('error', logger.Error);

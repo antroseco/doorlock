@@ -9,37 +9,10 @@
         "port": 443
     },
     "tags": [
-        {
-            "id": "0473b9d2a05980",
-            "device": "door"
-        },
-        {
-            "id": "04c007d2a05984",
-            "device": "door"
-        },
-        {
-            "id": "bef624d9",
-            "device": "door"
-        },
-        {
-            "id": "040ce52aa15981",
-            "device": "door"
-        },
-        {
-            "id": "047f69ea2f4d81",
-            "device": "door"
-        },
-        {
-            "id": "35314c74",
-            "device": "door"
-        },
-        {
-            "id": "e5304c74",
-            "device": "door"
-        },
-        {
-            "id": "a5d44374",
-            "device": "door"
-        }
+        "730488",
+        "dc4f55",
+        "7f0488",
+        "ca3c35",
+        "24f6be"
     ]
 }
