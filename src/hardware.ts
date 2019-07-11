@@ -23,11 +23,16 @@ class GpioHandle {
 	constructor(Options: {
 		Pin: number,
 		Mode: GpioMode,
+		Level?: BinaryValue,
 		Pull?: Pull,
 		Debounce?: number
 	}) {
 		this.gpio = Client.gpio(Options.Pin);
-		this.gpio.modeSet(Options.Mode);
+		// pigpio automatically sets mode to OUTPUT when write is called
+		if (Options.Level)
+			this.gpio.write(Options.Level)
+		else
+			this.gpio.modeSet(Options.Mode);
 		if (Options.Pull)
 			this.gpio.pullUpDown(Options.Pull);
 		if (Options.Debounce)
@@ -100,9 +105,9 @@ export class Controller extends EventEmitter {
 
 		this.Handle = new GpioHandle({
 			Pin,
-			Mode: "output"
+			Mode: "output",
+			Level: BinaryValue.HIGH
 		});
-		this.Handle.write(BinaryValue.LOW);
 	}
 
 	async Open(Id: string) {
@@ -112,13 +117,13 @@ export class Controller extends EventEmitter {
 		}
 
 		clearTimeout(this.Timeout!);
-		await this.Handle.write(BinaryValue.HIGH);
+		await this.Handle.write(BinaryValue.LOW);
 
 		logger.Log(Id, "requested to open the " + this.Name, "GRANTED");
 		this.emit("open");
 
 		await Sleep(500);
-		await this.Handle.write(BinaryValue.LOW);
+		await this.Handle.write(BinaryValue.HIGH);
 	}
 
 	Lock(Id: string, Value: any) {
