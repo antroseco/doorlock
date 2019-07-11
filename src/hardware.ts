@@ -52,7 +52,7 @@ export class Monitor {
 	private Handle: GpioHandle;
 	private Timeout = false;
 
-	constructor(readonly Name: string, Pin: number, private Action: (name: string) => any) {
+	constructor(readonly Name: string, Pin: number, private Action: (name: string) => void) {
 		this.Handle = new GpioHandle({
 			Pin,
 			Mode: "input",
@@ -126,7 +126,7 @@ export class Controller extends EventEmitter {
 		await this.Handle.write(BinaryValue.HIGH);
 	}
 
-	Lock(Id: string, Value: any) {
+	Lock(Id: string, Value: unknown) {
 		if (typeof Value !== "boolean" || Value === this.Locked) {
 			logger.Log(Id, "received corrupt response", typeof Value);
 			return false;
