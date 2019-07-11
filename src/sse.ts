@@ -36,7 +36,7 @@ class EventStream extends Transform {
 };
 
 export default class EventManager extends EventEmitter {
-    private Clients = new Set();
+    private Clients = new Set<EventStream>();
 
     constructor() {
         super();
