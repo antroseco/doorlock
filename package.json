@@ -12,7 +12,7 @@
     "koa-static": "^5.0.0",
     "material-components-web": "^3.0.0",
     "ms": "^2.1.2",
-    "pigpio-client": "^1.2.0"
+    "pigpio-client": "^1.5.1"
   },
   "devDependencies": {
     "@types/koa": "^2.0.49",
