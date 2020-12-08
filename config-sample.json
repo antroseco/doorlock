@@ -1,0 +1,14 @@
+{
+    "credentials": {
+        "key": "doorlock.party.key",
+        "cert": "fullchain.cer",
+        "ca": "raspberrypi_home.ca.crt"
+    },
+    "server": {
+        "ip": "::",
+        "port": 443
+    },
+    "tags": [
+        "abc123"
+    ]
+}

@@ -126,3 +126,6 @@ dist/
 
 # forever directories
 .forever/
+
+# Configuration file
+config.json
