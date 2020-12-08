@@ -40,22 +40,27 @@
 				<div class="mdc-card">
 					<h2 class="mdc-typography mdc-typography--headline5">Door</h2>
 					<div class="mdc-card__actions">
+
 						<div class="mdc-card__action-buttons">
-							<button class="mdc-button mdc-card__action mdc-card__action--button">Open</button>
+							<button class="mdc-button mdc-card__action mdc-card__action--button">
+								<div class="mdc-button__ripple"></div>
+								<span class="mdc-button__label">Open</span>
+							</button>
 						</div>
+
 						<div class="mdc-card__action-icons">
 							<div class="mdc-card__action mdc-card__action--icon">
 								<div class="mdc-switch mdc-switch--disabled">
 									<div class="mdc-switch__track"></div>
 									<div class="mdc-switch__thumb-underlay">
-										<div class="mdc-switch__thumb">
-											<input type="checkbox" class="mdc-switch__native-control" role="switch"
-												disabled />
-										</div>
+										<div class="mdc-switch__thumb"></div>
+										<input type="checkbox" class="mdc-switch__native-control" role="switch"
+											   aria-checked="false" disabled>
 									</div>
 								</div>
 							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -64,22 +69,27 @@
 				<div class="mdc-card">
 					<h2 class="mdc-typography mdc-typography--headline5">Gate</h2>
 					<div class="mdc-card__actions">
+
 						<div class="mdc-card__action-buttons">
-							<button class="mdc-button mdc-card__action mdc-card__action--button">Open</button>
+							<button class="mdc-button mdc-card__action mdc-card__action--button">
+								<div class="mdc-button__ripple"></div>
+								<span class="mdc-button__label">Open</span>
+							</button>
 						</div>
+
 						<div class="mdc-card__action-icons">
 							<div class="mdc-card__action mdc-card__action--icon">
 								<div class="mdc-switch mdc-switch--disabled">
 									<div class="mdc-switch__track"></div>
 									<div class="mdc-switch__thumb-underlay">
-										<div class="mdc-switch__thumb">
-											<input type="checkbox" class="mdc-switch__native-control" role="switch"
-												disabled />
-										</div>
+										<div class="mdc-switch__thumb"></div>
+										<input type="checkbox" class="mdc-switch__native-control" role="switch"
+											   aria-checked="false" disabled>
 									</div>
 								</div>
 							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -88,8 +98,8 @@
 	</main>
 
 	<div class="mdc-snackbar">
-		<div class="mdc-snackbar__surface">
-			<div class="mdc-snackbar__label" role="status" aria-live="polite"></div>
+		<div class="mdc-snackbar__surface" role="status" aria-relevant="additions">
+			<div class="mdc-snackbar__label" aria-atomic="false"></div>
 		</div>
 	</div>
 
