@@ -7,14 +7,14 @@ class SnackbarWrapper {
 	constructor(Query) {
 		this.queue = [];
 
-		this.native = document.querySelector(Query);
-		this.native.addEventListener("MDCSnackbar:closed", () => {
+		this.handle = new mdc.snackbar.MDCSnackbar(document.querySelector(Query));
+		this.handle.timeoutMs = 4000;
+
+		// Undocumented, but inherited from MDCComponent
+		this.handle.listen("MDCSnackbar:closed", () => {
 			if (this.queue.length)
 				this.pop();
 		});
-
-		this.handle = new mdc.snackbar.MDCSnackbar(this.native);
-		this.handle.timeoutMs = 4000;
 	}
 
 	notify(Message) {
@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function RegisterControls(Control) {
 	const Root = document.getElementById(Control);
 	const Button = Root.querySelector("button");
-	const Native = Root.querySelector("input");
 	const Switch = new mdc.switchControl.MDCSwitch(Root.querySelector(".mdc-switch"));
 
 	mdc.ripple.MDCRipple.attachTo(Button);
@@ -61,8 +60,9 @@ function RegisterControls(Control) {
 	Button.addEventListener("click", () =>
 		Post(`/api/v1/${Control}`));
 
-	Native.addEventListener("change", () => {
-		const Data = { status: Native.checked };
+	// Undocumented, but inherited from MDCComponent
+	Switch.listen("change", () => {
+		const Data = { status: Switch.checked };
 		Post(`/api/v1/${Control}/lock`, JSON.stringify(Data));
 	});
 }
