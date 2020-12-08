@@ -5,30 +5,26 @@ let Snackbar;
 
 class SnackbarWrapper {
 	constructor(Query) {
-		this.active = false;
 		this.queue = [];
 
 		this.native = document.querySelector(Query);
 		this.native.addEventListener("MDCSnackbar:closed", () => {
 			if (this.queue.length)
 				this.pop();
-			else
-				this.active = false;
 		});
 
 		this.handle = new mdc.snackbar.MDCSnackbar(this.native);
 		this.handle.timeoutMs = 4000;
 	}
 
-	Notify(Message) {
+	notify(Message) {
 		this.queue.push(Message);
 
-		if (!this.active)
+		if (!this.handle.isOpen)
 			this.pop();
 	}
 
 	pop() {
-		this.active = true;
 		this.handle.labelText = this.queue.shift();
 		this.handle.open();
 	}
@@ -41,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	RegisterControls("door");
 	RegisterControls("gate");
 
-	Events.addEventListener("message", e => Snackbar.Notify(e.data));
+	Events.addEventListener("message", e => Snackbar.notify(e.data));
 });
 
 function RegisterControls(Control) {
@@ -58,7 +54,7 @@ function RegisterControls(Control) {
 		try {
 			UpdateControls({ Button, Switch }, JSON.parse(e.data));
 		} catch (error) {
-			Snackbar.Notify(error);
+			Snackbar.notify(error);
 		}
 	});
 
@@ -94,7 +90,7 @@ async function Fetch(Method, Url, Data) {
 		// Nothing to parse if 204 NO CONTENT
 		return Response.status === 204 ? undefined : Response.json();
 	} catch (error) {
-		Snackbar.Notify(error);
+		Snackbar.notify(error);
 		return undefined;
 	}
 }
